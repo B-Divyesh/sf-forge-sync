@@ -1,0 +1,15 @@
+{
+  "slug": "forge-sync",
+  "title": "Continuous org-wide GitHub to Forgejo, Codeberg, and GitLab mirror with issue and pull request metadata sync",
+  "artifact_class": "cli",
+  "source": "github",
+  "targets": ["forgejo", "codeberg", "gitlab"],
+  "smallest_useful_product": "A single Rust binary that discovers every repository in a GitHub organization, creates missing target repositories, mirrors branches and tags, continuously synchronizes issues, labels, milestones and pull request discussions with idempotent mappings and an audit log, and writes a git-tracked JSON archive.",
+  "non_goals_v1": [
+    "Bidirectional review relay except as an explicitly experimental flag",
+    "CI workflow translation",
+    "Wiki or project-board synchronization",
+    "GitLab as a source"
+  ],
+  "success_measure": "Mirror a 50-repository organization with 5,000 issues in under 30 minutes initially and under two minutes incrementally."
+}
