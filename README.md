@@ -89,7 +89,6 @@ Run `forge-sync config example` for the complete annotated file. Important optio
 [sync]
 repos = ["api", "docs"]       # empty means all repositories
 exclude = ["scratch-*"]       # simple * and ? glob patterns
-concurrency = 4
 dry_run = false
 experimental_comment_relay = false
 ```

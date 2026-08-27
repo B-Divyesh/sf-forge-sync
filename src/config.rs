@@ -26,7 +26,6 @@ archive_dir = "forge-archive"
 git_archive = true
 repos = []
 exclude = []
-concurrency = 4
 dry_run = false
 experimental_comment_relay = false
 "#;
@@ -76,7 +75,6 @@ pub struct SyncConfig {
     pub git_archive: bool,
     pub repos: Vec<String>,
     pub exclude: Vec<String>,
-    pub concurrency: usize,
     pub dry_run: bool,
     pub experimental_comment_relay: bool,
 }
@@ -92,7 +90,6 @@ impl Default for SyncConfig {
             git_archive: true,
             repos: vec![],
             exclude: vec![],
-            concurrency: 4,
             dry_run: false,
             experimental_comment_relay: false,
         }
@@ -127,9 +124,6 @@ impl Config {
         }
         if self.sync.interval_seconds < 30 {
             bail!("sync.interval_seconds must be at least 30");
-        }
-        if self.sync.concurrency == 0 || self.sync.concurrency > 32 {
-            bail!("sync.concurrency must be between 1 and 32");
         }
         Ok(())
     }

@@ -9,10 +9,13 @@ use std::{
     thread,
 };
 
-fn one_response(body: &'static str, expected_auth: &'static str) -> String {
+fn one_response(
+    body: &'static str,
+    expected_auth: &'static str,
+) -> (String, thread::JoinHandle<()>) {
     let listener = TcpListener::bind("127.0.0.1:0").unwrap();
     let address = format!("http://{}", listener.local_addr().unwrap());
-    thread::spawn(move || {
+    let server = thread::spawn(move || {
         let (mut stream, _) = listener.accept().unwrap();
         let mut request = [0_u8; 4096];
         let read = stream.read(&mut request).unwrap();
@@ -26,22 +29,23 @@ fn one_response(body: &'static str, expected_auth: &'static str) -> String {
         )
         .unwrap();
     });
-    address
+    (address, server)
 }
 
 #[test]
 fn github_doctor_uses_bearer_auth_and_decodes_identity() {
-    let base = one_response(
+    let (base, server) = one_response(
         r#"{"login":"mirror-bot","html_url":"https://example.test/mirror-bot"}"#,
         "authorization: bearer source-secret",
     );
     let github = GitHub::new(&base, "acme", "source-secret".into()).unwrap();
     assert_eq!(github.doctor().unwrap().login, "mirror-bot");
+    server.join().unwrap();
 }
 
 #[test]
 fn forgejo_doctor_uses_token_auth() {
-    let base = one_response(
+    let (base, server) = one_response(
         r#"{"login":"target-bot"}"#,
         "authorization: token target-secret",
     );
@@ -56,4 +60,5 @@ fn forgejo_doctor_uses_token_auth() {
     )
     .unwrap();
     assert_eq!(forge.doctor().unwrap(), "target-bot");
+    server.join().unwrap();
 }
