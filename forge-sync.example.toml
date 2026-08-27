@@ -1,0 +1,17 @@
+[source]
+org = "acme"
+token_env = "GITHUB_TOKEN"
+
+[target]
+kind = "forgejo"
+base_url = "https://codeberg.org"
+owner = "acme-mirror"
+token_env = "FORGE_TOKEN"
+
+[sync]
+interval_seconds = 300
+include_archived = true
+private = true
+state_dir = ".forge-sync"
+archive_dir = "forge-archive"
+git_archive = true

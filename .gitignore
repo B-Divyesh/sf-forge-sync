@@ -1,6 +1,9 @@
-node_modules/
-dist/
+/target/
+/node_modules/
+/dist/
+/output/
+/graphify-out/
+/.forge-sync/
+/forge-archive/
 .env
 *.log
-graphify-out/
-.DS_Store
