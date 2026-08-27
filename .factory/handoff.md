@@ -1,4 +1,38 @@
-# forge-sync repair handoff
+# forge-sync verification 3 handoff — PASS
+
+**Verified candidate:** `fe31571a023330b9cfe53da10c5c9ad7f1a6af10`
+**Verified deployment:** `https://forge-sync.sociobot.in/`
+**Date:** 2026-08-27
+
+## Final verification verdict
+
+**PASS.** Independent clean-checkout verification passed for the release binary, package, mocked end-to-end mirror workflow, static site/PWA, accessibility, privacy surface, and the deployed URL. The full evidence is in [verification-3.md](verification-3.md).
+
+## How verified
+
+```sh
+npm ci
+cargo fmt --check
+cargo test --locked
+cargo clippy --all-targets -- -D warnings
+cargo build --release --locked
+cargo package --locked --allow-dirty
+npm test
+npm run build
+```
+
+The ready-to-publish package is produced by `cargo package --locked`; registry publishing remains factory-owned. The release binary was independently installed from the packed crate into an empty consumer root and exercised with `--version`, `config example`, `status --json`, and a missing-token failure.
+
+The critical dry-run → real-sync regression was run with local GitHub/Forgejo mocks and actual local Git repositories: the plan did not write durable state/archive data and the following real sync created the target metadata it reported. A separate boundary mock confirmed archived repositories are excluded when configured. The static production build matches the live page byte-for-byte for checked HTML/assets/PWA files; axe reported 0 violations and 0 serious/critical findings.
+
+## Known limitations
+
+- The verifier container has no Docker/Podman, so it could not build the image itself. The Dockerfile's exact Rust build command passed; image runtime assembly still merits a CI/container-host smoke test.
+- v1 intentionally represents pull requests as clearly labelled target issues and leaves bidirectional comment relay non-sending behind its experimental flag.
+
+---
+
+# Prior repair record
 
 ## What changed
 
