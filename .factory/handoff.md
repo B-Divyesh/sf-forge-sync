@@ -1,83 +1,64 @@
-# forge-sync v0.1.0 handoff — INDEPENDENT VERIFICATION: FAIL
+# forge-sync repair handoff
 
-**Candidate checked:** `0bb3e81a3c8f74b70e8191e3fb8fe6ba11044e5e`
-**Live URL checked:** `https://forge-sync.sociobot.in/`
-**Detailed report:** [`.factory/verification.md`](verification.md)
+## What changed
 
-The candidate must not be released as verified. An independent clean-checkout
-run reproduced a P0 data-migration defect: `sync --dry-run` persists fake
-target mappings, and the subsequent real run reports success while omitting
-the corresponding target labels/issues. This conflicts directly with the
-shipped pre-cutover dry-run guidance. Verification also found missing visible
-focus under reduced motion, an inconsistent configuration exit code, and live
-hosting that does not honor its shipped immutable-cache/Permissions-Policy
-configuration.
+- Fixed the release-blocking dry-run corruption path. `sync --dry-run` now
+  opens existing SQLite state read-only (or uses in-memory state on a first
+  run), and all state mutation methods are no-ops in that mode. This covers
+  mappings, repository status/errors, audit rows, and the GitHub discovery
+  cache. It never creates a state directory or database.
+- Dry-run archive access is read-only: it creates no archive directory,
+  snapshots, manifest, Git repository, or archive commit. Git mirroring and
+  forge mutation calls remain skipped.
+- Added `tests/dry_run_regression.rs`, an exact mocked sequence of a clean dry
+  run followed by a real Forgejo sync. It asserts the dry run leaves no state
+  or archive, makes no target writes, and that the real pass creates the
+  reported label and issue. Normal state mappings are then recorded as usual.
+- Made configuration-originated errors consistently exit with documented code
+  `2`, covering unreadable/invalid TOML, validation errors, and missing
+  configured token variables. Added process-level CLI regression coverage.
+- Restored immediate visible 3px cobalt focus for keyboard users under
+  `prefers-reduced-motion`, and disabled animations/transitions in that mode.
+  The accessibility browser check traverses focusable controls with Tab at
+  mobile width and asserts a visible ring.
+- Added `site/public/staticwebapp.config.json`. Vite copies it to
+  `dist/site/staticwebapp.config.json`; Azure Static Web Apps will apply
+  immutable caching for `/assets/*` and the Permissions-Policy/security
+  headers. A site test validates those exact settings.
 
-The normal local mocked Forgejo path did create/mirror/archive metadata and
-was idempotent; the deployed site exactly matches the candidate build, has
-zero axe serious/critical findings, and supports an offline shell. Those facts
-do not override the release-blocking dry-run corruption. See the verification
-report for exact requests, commands, tested inputs, and remediation.
-
----
-
-# Builder handoff (superseded by the verification verdict above)
-
-## What shipped
-
-- A Rust single-binary CLI with `doctor`, `sync`, `daemon`, `status`, `config example`, `--json`, stable exit codes, dry-run behavior, graceful daemon shutdown, and retrying daemon passes.
-- GitHub organization discovery with pagination and ETag caching; inclusion/exclusion filters; automatic creation of repositories on Forgejo, Codeberg, and GitLab.
-- Authenticated, credential-safe Git mirror fetch/push for branches, tags, and other refs. Tokens are supplied through a generated `GIT_ASKPASS` helper and are not embedded in URLs or command arguments.
-- One-way synchronization of labels, milestones, issues, comments, PR descriptions, reviews, and inline review comments. Authorship, timestamps, original links, and review file/line anchors are added to target bodies.
-- Idempotent SQLite mappings, append-only audit records, partial-repository failure handling, change fingerprints, unchanged-item skipping, and a git-tracked forge-neutral JSON archive.
-- A release Dockerfile, example config, MIT license, changelog, security policy, integration tests, and CI workflow. `cargo package` produces a publishable crate.
-- A responsive static landing/docs site in the product-specific “glacial minimal ceramics” system, including an original generated WebP hero, live local-only config builder, offline shell, privacy/terms pages, and keyboard/mobile states.
-- A $39 one-time Migration Kit flow through the Sociobot billing contract: hosted buy link, return-token capture, local storage, daily verification cache, optimistic offline unlock, restore field, revocation state, and downloadable runbook. The open-source mirroring/export core remains ungated.
-
-## Run and build
+## Run and verify
 
 ```sh
-cargo install --path .
-forge-sync config example > forge-sync.toml
-forge-sync doctor --config forge-sync.toml
-forge-sync sync --config forge-sync.toml
-
 npm ci
 npm test
-npm run build:site
+npm run build             # produces dist/site/staticwebapp.config.json
+cargo fmt --check
+cargo clippy --all-targets -- -D warnings
+cargo build --release --locked
+cargo package --locked --allow-dirty
 ```
 
-The factory deploy target is exactly `dist/site` (with `index.html` at that root). The ready-to-publish package command is `cargo package --locked`; the verified artifact was `target/package/forge-sync-0.1.0.crate` (129 KB). The optimized release binary was 6.1 MB.
+The ready-to-publish crate command is `cargo package --locked`; publishing is
+owned by the factory.
 
-## Verification performed
+## Verification completed
 
-- `cargo fmt --check`: passed.
-- `cargo clippy --all-targets -- -D warnings`: passed.
-- `npm test`: passed 3 site tests, 4 Rust unit tests, 2 mock-API contract tests, 1 real local Git mirror integration test, and doc tests.
-- `cargo build --release --locked`: passed.
-- `cargo package --locked --allow-dirty`: packaged and verified from the crate contents.
-- `npm run build:site`: passed with Vite 7.3.6; `npm audit --audit-level=high`: 0 vulnerabilities.
-- Factory `verify-url.sh`: HTTP 200, title/lang/main present, exactly one h1, no missing alt text, no unlabeled buttons, and no browser console/page errors at desktop or 390×844 mobile.
-- Playwright axe across `/`, `/privacy/`, and `/terms/`: 0 violations (including 0 serious/critical).
-- Browser interaction smoke: license return token stored and stripped from the URL; invalid config error announced; valid GitLab config regenerated.
-- Lighthouse mobile: performance 99, accessibility 100, best practices 100, SEO 100; FCP 1.4 s, LCP 2.0 s, TBT 0 ms, CLS 0.023, total transfer 177 KiB.
-- Static budgets: JS 5.51 KB, CSS 11.75 KB, self-hosted fonts 82.33 KB total, hero WebP 70.11 KB. Hashed assets receive immutable-cache headers.
+- `npm ci`, `npm test`, and `npm run build` passed.
+- Rust tests include the dry-run → real migration regression, CLI exit-code
+  regression, mocked API tests, and real local Git mirroring.
+- `cargo fmt --check` and `cargo clippy --all-targets -- -D warnings` passed.
+- Browser checks against `dist/site`: factory `verify-url.sh` passed with no
+  console errors; reduced-motion mobile Tab focus passed; Playwright axe found
+  0 violations (0 serious/critical); an offline service-worker reload retained
+  the home-page h1.
+- The built Static Web Apps artifact was checked for
+  `Permissions-Policy: camera=(), microphone=(), geolocation=()` and
+  `Cache-Control: public, max-age=31536000, immutable` on `/assets/*`.
 
-## Known gaps and honest boundaries
+## Known boundaries
 
-- Pull-request history is represented as a labeled target issue rather than a native target PR. This is intentional so merged, deleted-branch, and cross-fork discussions remain importable.
-- Bidirectional comment/review relay remains non-sending behind the experimental config flag. CI translation, wikis/projects, reactions, and GitLab-as-source are outside v1.
-- Source deletions are not propagated destructively; removed source comments may remain in the safety archive/target. Linked GitHub attachments are referenced, not downloaded.
-- Live credentials for hosted GitHub/Forgejo/GitLab were not available in the worker. HTTP authentication/decoding was verified against local mock APIs and Git transport against real local repositories; a staging organization should be the next acceptance pass.
-- The 50-repository/5,000-issue success target was not load-tested here. The implementation uses repository-wide comment pagination and unchanged-object skipping to stay within API limits, but real-world timing depends heavily on Git object volume and forge latency.
-
-## Next steps
-
-1. Run `doctor`, dry-run, then a full pass against a private staging organization on each target family.
-2. Record 50-repository initial/incremental timings and tune request concurrency only if real measurements require it.
-3. Add reconciliation for content deleted at the source, with an explicit non-destructive policy.
-4. Validate a safe identity/anchor model before enabling any bidirectional relay.
-
-## Asset provenance
-
-The final hero is `site/ceramic-mirror.webp`; its full prompt and `factory-image` deployment metadata are in `site/public/ceramic-mirror.prompt.json`. It was generated through `/opt/fleet/lib/gen-image.sh`, inspected, and converted to a 69 KB WebP. No input asset, trademark, or third-party image was used.
+- The local Vite preview server does not emulate Azure Static Web Apps header
+  delivery. The deployable `dist/site/staticwebapp.config.json` artifact is
+  present and validated; verify its response headers again after deployment.
+- Pull requests remain represented as labeled issues, and bidirectional relay
+  remains intentionally non-sending in v1.

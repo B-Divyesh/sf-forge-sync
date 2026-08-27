@@ -6,10 +6,34 @@ footer nav a,
   align-items: center;
 }
 
+/* `:focus` is the reliable baseline; `:focus-visible` remains the preferred
+   selector where the browser supports its keyboard modality heuristic. */
+:focus {
+  outline: 3px solid var(--cobalt);
+  outline-offset: 3px;
+}
+
 @media (forced-colors: active) {
   .live-dot,
   .sync-flow article::before {
     forced-color-adjust: none;
     border: 2px solid CanvasText;
+  }
+}
+
+/* Keep the designed ring when motion rules disable transitions. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  :focus,
+  :focus-visible {
+    outline: 3px solid var(--cobalt) !important;
+    outline-offset: 3px !important;
+    transition: none !important;
   }
 }

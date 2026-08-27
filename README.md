@@ -66,7 +66,7 @@ forge-sync status --config forge-sync.toml --json
 forge-sync sync --config forge-sync.toml --json
 ```
 
-Exit codes are `0` success, `2` configuration/usage, `3` authentication, `4` API/rate-limit, `5` git transport, and `6` partial synchronization. Commands never prompt.
+Exit codes are `0` success, `2` configuration/usage (including unreadable or invalid TOML and missing configured token variables), `3` authentication, `4` API/rate-limit, `5` git transport, and `6` partial synchronization. Commands never prompt.
 
 ## What gets synchronized
 
@@ -92,6 +92,11 @@ exclude = ["scratch-*"]       # simple * and ? glob patterns
 dry_run = false
 experimental_comment_relay = false
 ```
+
+`forge-sync sync --dry-run` reads the source and target to produce the same
+report as a pass, but never changes either forge, Git refs, SQLite state,
+discovery cache/audit data, or the JSON archive. It is safe to run before the
+first real migration; the next real run creates every missing object it found.
 
 Bidirectional comment relay is intentionally disabled in v1; setting the experimental flag records a warning but never sends a target comment to GitHub. This avoids silently misattributing authors or drifting inline anchors.
 

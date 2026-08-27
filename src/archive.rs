@@ -11,6 +11,7 @@ use std::{
 pub struct Archive {
     root: PathBuf,
     git: bool,
+    writable: bool,
 }
 
 impl Archive {
@@ -19,7 +20,18 @@ impl Archive {
         Ok(Self {
             root: root.into(),
             git,
+            writable: true,
         })
+    }
+
+    /// A dry-run archive can inspect snapshots from a previous real run, but never
+    /// creates directories, snapshots, manifests, or Git commits.
+    pub fn open_read_only(root: &Path, git: bool) -> Self {
+        Self {
+            root: root.into(),
+            git,
+            writable: false,
+        }
     }
     pub fn write_repository(
         &self,
@@ -28,6 +40,9 @@ impl Archive {
         milestones: &[Milestone],
         items: &[ItemSnapshot],
     ) -> Result<()> {
+        if !self.writable {
+            return Ok(());
+        }
         let dir = self.root.join("repositories").join(&repo.name);
         let item_dir = dir.join("items");
         fs::create_dir_all(&item_dir)?;
@@ -56,7 +71,7 @@ impl Archive {
             .is_file()
     }
     pub fn commit(&self) -> Result<()> {
-        if !self.git {
+        if !self.writable || !self.git {
             return Ok(());
         }
         if !self.root.join(".git").exists() {

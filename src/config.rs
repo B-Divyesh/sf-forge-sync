@@ -98,10 +98,10 @@ impl Default for SyncConfig {
 
 impl Config {
     pub fn from_path(path: &Path) -> Result<Self> {
-        let raw =
-            fs::read_to_string(path).with_context(|| format!("read config {}", path.display()))?;
-        let config: Self = toml::from_str(&raw).context("parse TOML configuration")?;
-        config.validate()?;
+        let raw = fs::read_to_string(path)
+            .with_context(|| format!("configuration error: read {}", path.display()))?;
+        let config: Self = toml::from_str(&raw).context("configuration error: parse TOML")?;
+        config.validate().context("configuration error")?;
         Ok(config)
     }
 
@@ -129,10 +129,10 @@ impl Config {
     }
 
     pub fn source_token(&self) -> Result<String> {
-        required_env(&self.source.token_env)
+        required_env(&self.source.token_env).context("configuration error")
     }
     pub fn target_token(&self) -> Result<String> {
-        required_env(&self.target.token_env)
+        required_env(&self.target.token_env).context("configuration error")
     }
 
     pub fn includes_repo(&self, name: &str, archived: bool) -> bool {

@@ -169,7 +169,7 @@ fn print_report(report: &engine::RunReport, json_output: bool) -> Result<()> {
 }
 fn classify(error: &str) -> u8 {
     let e = error.to_lowercase();
-    if e.contains("config") || e.contains("environment variable") || e.contains("toml") {
+    if e.contains("configuration error") {
         2
     } else if e.contains("401") || e.contains("403") || e.contains("authenticate") {
         3

@@ -48,7 +48,14 @@ pub fn run_once(config: &Config) -> Result<RunReport> {
         dry_run: config.sync.dry_run,
         ..Default::default()
     };
-    let state = State::open(&config.sync.state_dir)?;
+    // A plan must be observational: it must not create a state directory,
+    // poison mappings with placeholder IDs, update discovery cache/audit data,
+    // or write an archive.
+    let state = if config.sync.dry_run {
+        State::open_read_only(&config.sync.state_dir)?
+    } else {
+        State::open(&config.sync.state_dir)?
+    };
     let source_token = config.source_token()?;
     let target_token = config.target_token()?;
     let github = GitHub::new(
@@ -92,7 +99,11 @@ pub fn run_once(config: &Config) -> Result<RunReport> {
             "experimental comment relay requested; sending target comments remains disabled in v1",
         )?;
     }
-    let archive = Archive::new(&config.sync.archive_dir, config.sync.git_archive)?;
+    let archive = if config.sync.dry_run {
+        Archive::open_read_only(&config.sync.archive_dir, config.sync.git_archive)
+    } else {
+        Archive::new(&config.sync.archive_dir, config.sync.git_archive)?
+    };
     let resources = SyncResources {
         config,
         github: &github,
