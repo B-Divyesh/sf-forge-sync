@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Continuously mirror a GitHub organization—including issues and pull request discussions—to Forgejo, Codeberg, or GitLab.">
+    <meta name="theme-color" content="#f6f7f3">
+    <title>forge-sync — keep your GitHub organization portable</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <div id="network-state" class="network" role="status" hidden></div>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="forge-sync home"><span class="brand-mark" aria-hidden="true">fs</span><span>forge-sync</span></a>
+      <nav aria-label="Primary navigation">
+        <a href="#how">How it works</a><a href="#configure">Configure</a><a href="#pricing">Pricing</a><a class="nav-code" href="https://github.com/B-Divyesh/sf-forge-sync">Source ↗</a>
+      </nav>
+    </header>
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span>Continuous organization mirroring</p>
+          <h1 id="hero-title">Your GitHub org,<br><em>somewhere else.</em><br>Continuously.</h1>
+          <p class="lede">Every repository. Every new repo. Branches, tags, issues, labels, milestones, PR conversations, and review context—kept usable on your forge and in a portable archive.</p>
+          <div class="actions"><a class="button primary" href="#configure">Build your config</a><a class="button quiet" href="https://github.com/B-Divyesh/sf-forge-sync/releases">Download v0.1.0</a></div>
+          <p class="trust">Open source · One binary · No telemetry · Tokens stay local</p>
+        </div>
+        <figure class="hero-art">
+          <img src="/ceramic-mirror.webp" width="1536" height="1024" fetchpriority="high" alt="Two pale ceramic repository vessels connected through an archive tile by a precise cobalt path.">
+          <figcaption><span>GitHub org</span><span>JSON archive</span><span>Your forge</span></figcaption>
+        </figure>
+      </section>
+
+      <section class="proof" aria-label="Synchronization coverage">
+        <div><strong>all</strong><span>new repositories discovered</span></div>
+        <div><strong>1→1</strong><span>stable ID mappings</span></div>
+        <div><strong>3</strong><span>target forge families</span></div>
+        <div><strong>0</strong><span>tracking calls</span></div>
+      </section>
+
+      <section id="how" class="section split">
+        <div class="section-heading"><p class="eyebrow">A living copy, not a cold backup</p><h2>One path through three durable layers.</h2></div>
+        <div class="sync-flow" aria-label="GitHub source synchronizes through a local archive to the target forge">
+          <article><span class="step">01 / discover</span><h3>GitHub organization</h3><p>Pagination and conditional requests catch private, archived, and newly created repositories without burning the rate limit.</p></article>
+          <article><span class="step">02 / preserve</span><h3>Local state + JSON</h3><p>SQLite keeps idempotent mappings and an audit trail. Forge-neutral snapshots are committed to your own Git archive.</p></article>
+          <article><span class="step">03 / mirror</span><h3>Forgejo · Codeberg · GitLab</h3><p>Missing projects are created, every ref is mirror-pushed, and discussions arrive with author and source links intact.</p></article>
+        </div>
+      </section>
+
+      <section class="section fidelity">
+        <div class="section-heading"><p class="eyebrow">What survives the crossing</p><h2>Code is only half the project.</h2><p>forge-sync keeps the social record readable even when the target cannot model a GitHub object exactly.</p></div>
+        <ul class="ledger">
+          <li><span>Git refs</span><strong>Branches + tags</strong><small>True mirror push</small></li>
+          <li><span>Planning</span><strong>Issues + milestones</strong><small>State and labels preserved</small></li>
+          <li><span>Review</span><strong>PR conversation</strong><small>Inline anchors retained as context</small></li>
+          <li><span>Identity</span><strong>Author + timestamp</strong><small>Canonical source link in body</small></li>
+        </ul>
+      </section>
+
+      <section id="configure" class="section configure">
+        <div class="section-heading"><p class="eyebrow">Start safely</p><h2>Make a config. Keep secrets out of it.</h2><p>This local builder never asks for tokens and sends nothing anywhere.</p></div>
+        <form id="config-form" class="builder" novalidate>
+          <div class="field"><label for="org">GitHub organization</label><input id="org" name="org" value="acme" autocomplete="organization" required></div>
+          <div class="field"><label for="kind">Target forge</label><select id="kind" name="kind"><option value="forgejo">Forgejo</option><option value="codeberg">Codeberg</option><option value="gitlab">GitLab</option></select></div>
+          <div class="field wide"><label for="url">Target URL</label><input id="url" name="url" type="url" value="https://codeberg.org" inputmode="url" required></div>
+          <div class="field"><label for="owner">Target owner / namespace</label><input id="owner" name="owner" value="acme-mirror" required></div>
+        </form>
+        <div class="code-shell">
+          <div class="code-bar"><span>forge-sync.toml</span><div><button id="copy-config" type="button">Copy config</button><button id="download-config" type="button">Download</button></div></div>
+          <pre tabindex="0" aria-label="Scrollable generated configuration"><code id="config-output"></code></pre>
+        </div>
+        <p id="config-status" class="form-status" role="status" aria-live="polite"></p>
+        <div class="next-command"><span>Then validate without writing:</span><code>forge-sync doctor --config forge-sync.toml</code></div>
+      </section>
+
+      <section class="section operation">
+        <div class="section-heading"><p class="eyebrow">Designed for unattended runs</p><h2>Quiet when healthy. Specific when not.</h2></div>
+        <div class="terminal" aria-label="Example forge-sync terminal output"><div class="terminal-bar"><i></i><i></i><i></i><span>mirror-host</span></div><pre tabindex="0" aria-label="Scrollable example terminal output"><code><span class="dim">$</span> forge-sync sync --config forge-sync.toml
+<span class="ok">✓</span> discovered     48 repositories
+<span class="ok">✓</span> mirrored       48 ref sets
+<span class="ok">✓</span> synchronized   5,184 issues · 13,902 comments
+<span class="ok">✓</span> archived       commit 8e10f4a
+
+Completed in 01:42 · 0 failed</code></pre></div>
+        <div class="states"><p><strong>Retry-safe.</strong> Stable source IDs prevent duplicates after interruption.</p><p><strong>Partial-failure aware.</strong> One broken repo is audited while the rest continue.</p><p><strong>Scriptable.</strong> Every operational command can emit JSON and meaningful exit codes.</p></div>
+      </section>
+
+      <section id="pricing" class="section pricing">
+        <div class="section-heading"><p class="eyebrow">Fair, legible pricing</p><h2>The mirror is free. The cutover kit saves a weekend.</h2></div>
+        <article class="tier"><p class="tier-name">Community</p><p class="price">$0 <small>forever</small></p><ul><li>Unlimited repositories and metadata</li><li>All target adapters</li><li>Portable archive and audit log</li><li>Docker and single binary</li></ul><a class="button quiet" href="https://github.com/B-Divyesh/sf-forge-sync">Get the source</a></article>
+        <article class="tier paid"><p class="tier-name">Migration Kit</p><p class="price">$39 <small>one-time</small></p><ul><li>Production cutover runbook</li><li>Verification and rollback checklists</li><li>Founding-buyer updates</li><li>Supports ongoing maintenance</li></ul><a class="button primary" href="https://api.sociobot.in/api/v1/products/forge-sync/checkout">Buy Migration Kit</a><button id="download-kit" class="button quiet" type="button" aria-label="Download your migration runbook" hidden>Download your runbook</button>
+          <details><summary>Have a license? Restore purchase</summary><form id="license-form"><label for="license">License token</label><div class="license-row"><input id="license" name="license" autocomplete="off" required><button type="submit" aria-label="Verify license">Verify</button></div></form><p id="license-status" role="status" aria-live="polite">Your license is checked at most once per day.</p></details>
+        </article>
+        <p class="merchant">Sociobot/Dodo is the merchant of record. Refunds are handled there and revoke the license automatically. <a href="/terms/">Terms</a> · <a href="/privacy/">Privacy</a></p>
+      </section>
+
+      <section class="section faq"><div class="section-heading"><p class="eyebrow">The sharp edges, stated plainly</p><h2>Before you point it at production.</h2></div>
+        <details><summary>Does it recreate pull requests?</summary><p>It preserves pull-request descriptions, reviews, discussion comments, and inline file/line anchors in a labeled target issue. This remains valid after merge, branch deletion, or cross-fork work.</p></details>
+        <details><summary>Does it sync changes back to GitHub?</summary><p>Not in v1. The experimental relay flag records intent but sends nothing. Reliable bidirectional identity and review-anchor mapping needs more real-world validation.</p></details>
+        <details><summary>Where do tokens and data go?</summary><p>Tokens stay in environment variables. Metadata goes only to your chosen target, local SQLite state, and your local JSON archive. The documentation site never receives it.</p></details>
+      </section>
+
+      <section class="closing"><p class="eyebrow">Keep the exit open</p><h2>Your forge should be a choice,<br>not a single point of memory.</h2><a class="button primary" href="#configure">Build your config</a></section>
+    </main>
+    <footer><a class="brand" href="/"><span class="brand-mark" aria-hidden="true">fs</span><span>forge-sync</span></a><p>Open infrastructure for a more portable commons.</p><nav aria-label="Legal"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://github.com/B-Divyesh/sf-forge-sync">GitHub</a></nav></footer>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
