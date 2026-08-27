@@ -1,4 +1,27 @@
-# forge-sync v0.1.0 handoff
+# forge-sync v0.1.0 handoff — INDEPENDENT VERIFICATION: FAIL
+
+**Candidate checked:** `0bb3e81a3c8f74b70e8191e3fb8fe6ba11044e5e`
+**Live URL checked:** `https://forge-sync.sociobot.in/`
+**Detailed report:** [`.factory/verification.md`](verification.md)
+
+The candidate must not be released as verified. An independent clean-checkout
+run reproduced a P0 data-migration defect: `sync --dry-run` persists fake
+target mappings, and the subsequent real run reports success while omitting
+the corresponding target labels/issues. This conflicts directly with the
+shipped pre-cutover dry-run guidance. Verification also found missing visible
+focus under reduced motion, an inconsistent configuration exit code, and live
+hosting that does not honor its shipped immutable-cache/Permissions-Policy
+configuration.
+
+The normal local mocked Forgejo path did create/mirror/archive metadata and
+was idempotent; the deployed site exactly matches the candidate build, has
+zero axe serious/critical findings, and supports an offline shell. Those facts
+do not override the release-blocking dry-run corruption. See the verification
+report for exact requests, commands, tested inputs, and remediation.
+
+---
+
+# Builder handoff (superseded by the verification verdict above)
 
 ## What shipped
 
