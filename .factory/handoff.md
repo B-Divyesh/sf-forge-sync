@@ -62,5 +62,11 @@ work-order static deployment configuration. The committed
 `site/public/staticwebapp.config.json` carries CSP, cache headers, and the
 product 404 response override.
 
+The repair branch and deployment handoff were pushed to `origin/main` at
+`4c4ef14535ec74f3cd11c88d5d98eb023bce2e14`. During the final host poll at
+10:14 UTC, `https://forge-sync.sociobot.in/` still served the preceding
+revision and `/demo/` returned 404. Static-host propagation is factory-managed;
+the committed build and deployment configuration are ready for that release.
+
 No known blocking findings remain. The only intentionally omitted surface is
 the unsupported paid Migration Kit; no checkout or license claim is shipped.
