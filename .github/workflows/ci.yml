@@ -17,8 +17,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-        env:
-          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+      - run: npx playwright install --with-deps chromium
       - run: cargo fmt --check
       - run: cargo clippy --all-targets -- -D warnings
       - run: npm test
