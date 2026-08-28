@@ -17,8 +17,8 @@ cargo run -- demo
 The command creates a new temporary directory and prints its path. It does not
 read your configuration or token values. The output contains the fictional
 Harbor Cooperative `harbor-tools` repository, branches, a tag, a pull-request
-record, mappings, audit events, and a committed JSON archive. Delete the
-printed directory when you finish.
+record, a SQLite mapping and audit log, and a committed JSON archive. Delete
+the printed directory when you finish.
 
 The source records are in [`examples/sample-mirror`](examples/sample-mirror/).
 See [`.factory/demo.md`](.factory/demo.md) for browser and CLI sandbox details.
@@ -93,6 +93,7 @@ forge, Git data, local state, the audit log, or the JSON archive.
 ```sh
 npm ci
 npm test
+npm run test:claims
 npm run build
 cargo fmt --check
 cargo clippy --all-targets -- -D warnings

@@ -1,5 +1,8 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'node:path';
+import { execFileSync } from 'node:child_process';
+
+const buildId = process.env.VITE_BUILD_ID || execFileSync('git', ['rev-parse', '--short=8', 'HEAD'], { encoding: 'utf8' }).trim();
 
 export default defineConfig({
   root: resolve(import.meta.dirname),
@@ -18,5 +21,9 @@ export default defineConfig({
         notFound: resolve(import.meta.dirname, '404.html')
       }
     }
-  }
+  },
+  plugins: [{
+    name: 'forge-sync-build-id',
+    transformIndexHtml: html => html.replaceAll('__BUILD_ID__', buildId)
+  }]
 });

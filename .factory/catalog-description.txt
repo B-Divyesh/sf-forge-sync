@@ -1,1 +1,1 @@
-Mirror your GitHub organization to another forge with an inspectable local sample.
+Mirror a GitHub organization to Forgejo, Codeberg, or GitLab with issues and pull-request history.

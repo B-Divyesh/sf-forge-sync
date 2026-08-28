@@ -1,37 +1,72 @@
 [
   {
     "id": "demo-completed-mirror",
-    "claim": "The CLI sample creates a completed mirror with branches, tags, a pull-request record, mappings, audit events, and a committed JSON archive.",
+    "claim": "The CLI sample creates isolated output with branches, tags, a rendered pull-request record, real SQLite mappings and audit events, and a committed JSON archive without reading configuration or token values.",
     "where": "landing sample panel, demo page, README",
     "test": "npm run test:claim:demo-cli",
-    "sandbox": "fresh CLI process; inspect its newly created operating-system temporary directory"
+    "sandbox": "fresh CLI process with canary tokens and an invalid configuration in its working directory; inspect only its new operating-system temporary directory"
   },
   {
     "id": "demo-browser-isolation",
-    "claim": "The browser sample uses its own demo storage and Reset demo clears that storage without saving real data.",
+    "claim": "The browser sample uses demo-prefixed storage; reset replaces only its demo session and Start for real discards it without changing non-demo storage.",
     "where": "landing demo banner, demo page, privacy page",
     "test": "npm run test:claim:demo-browser",
-    "sandbox": "fresh Playwright browser context at /?demo=1; inspect localStorage and every request"
+    "sandbox": "fresh Playwright context with a non-demo sentinel; enter /?demo=1, reset, leave, and inspect storage and every request"
   },
   {
     "id": "configuration-has-no-token-field",
     "claim": "The configuration builder creates token environment-variable names but has no token field and sends no requests away from the site.",
     "where": "configuration builder, privacy page",
     "test": "npm run test:claim:configuration",
-    "sandbox": "fresh Playwright browser context; edit every configuration control and inspect generated text, controls, and requests"
+    "sandbox": "fresh Playwright context; edit every configuration control and inspect generated text, controls, and requests"
+  },
+  {
+    "id": "website-no-tracking",
+    "claim": "The website has no analytics or advertising requests.",
+    "where": "landing facts, privacy page",
+    "test": "npm run test:claim:privacy",
+    "sandbox": "fresh Playwright context; visit every page, enter demo, use the builder, and reject any cross-origin request"
+  },
+  {
+    "id": "supported-targets",
+    "claim": "forge-sync can create private target repositories through Forgejo, Codeberg, and GitLab API contracts.",
+    "where": "landing first screen, configuration builder, README",
+    "test": "npm run test:claim:targets",
+    "sandbox": "shipped sample repository against local Forgejo, Codeberg, and GitLab HTTP contract servers"
+  },
+  {
+    "id": "git-refs-mirror",
+    "claim": "forge-sync mirrors Git branches and tags.",
+    "where": "README What it records",
+    "test": "npm run test:claim:git-refs",
+    "sandbox": "fresh temporary local source and target bare Git repositories with one branch and one tag"
+  },
+  {
+    "id": "dry-run-read-only",
+    "claim": "A dry run does not write target data, local state, audit data, or an archive, and a following real run creates the planned records.",
+    "where": "README What it records",
+    "test": "npm run test:claim:dry-run",
+    "sandbox": "fresh local Git repositories and source/target HTTP mocks; compare dry-run and real-run requests and files"
+  },
+  {
+    "id": "doctor-read-only",
+    "claim": "forge-sync doctor checks source and target identities without writing local or remote data.",
+    "where": "CLI help and README quick start",
+    "test": "npm run test:claim:doctor",
+    "sandbox": "fresh temporary configuration and local source/target HTTP servers; allow only GET identity requests and assert no state or archive path is created"
   },
   {
     "id": "mit-license",
-    "claim": "forge-sync is released under the MIT License.",
+    "claim": "forge-sync is free under the MIT License.",
     "where": "landing fact, terms, README",
     "test": "npm run test:claim:license",
-    "sandbox": "read the shipped LICENSE file"
+    "sandbox": "read the shipped LICENSE and Cargo package metadata"
   },
   {
     "id": "offline-demo-after-first-visit",
-    "claim": "The sample and configuration builder remain available offline after a first visit.",
-    "where": "offline status banner",
+    "claim": "The sample and configuration builder work offline after a first visit.",
+    "where": "landing fact and offline status banner",
     "test": "npm run test:claim:offline",
-    "sandbox": "fresh Playwright context; visit demo online, wait for the service worker, then reload offline"
+    "sandbox": "fresh Playwright context; visit demo online, wait for the service worker, reload offline, and edit the configuration"
   }
 ]

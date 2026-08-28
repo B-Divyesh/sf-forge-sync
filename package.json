@@ -11,6 +11,12 @@
     "test:claim:configuration": "node --test --test-name-pattern=@claim:configuration-has-no-token-field site/test/browser.test.js",
     "test:claim:offline": "node --test --test-name-pattern=@claim:offline-demo-after-first-visit site/test/browser.test.js",
     "test:claim:license": "node --test --test-name-pattern=@claim:mit-license site/test/claims-static.test.js",
+    "test:claim:privacy": "node --test --test-name-pattern=@claim:website-no-tracking site/test/browser.test.js",
+    "test:claim:targets": "cargo test --test target_adapters claim_supported_target_adapters_use_their_real_api_contracts",
+    "test:claim:git-refs": "cargo test --test git_mirror mirrors_branches_and_tags_between_real_local_repositories",
+    "test:claim:dry-run": "cargo test --test dry_run_regression dry_run_then_real_run_creates_every_reported_target_object_without_durable_dry_state",
+    "test:claim:doctor": "cargo test --test doctor_read_only claim_doctor_checks_both_identities_with_gets_and_writes_nothing",
+    "test:claims": "node scripts/run-claims.mjs",
     "test:a11y": "node scripts/a11y.mjs",
     "build": "npm run build:site",
     "build:site": "vite build --config site/vite.config.js"

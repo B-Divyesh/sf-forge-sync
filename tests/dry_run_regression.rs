@@ -98,6 +98,7 @@ fn response(request: &str, source_git_url: &str, target_git_url: &str) -> (&'sta
 
 #[test]
 fn dry_run_then_real_run_creates_every_reported_target_object_without_durable_dry_state() {
+    // @claim:dry-run-read-only
     let temp = tempfile::tempdir().unwrap();
     let source = temp.path().join("source.git");
     let target = temp.path().join("target.git");

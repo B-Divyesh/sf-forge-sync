@@ -1,6 +1,14 @@
 use anyhow::{Context, Result};
 use clap::{Args, Parser, Subcommand};
-use forge_sync::{engine, forge::Forge, github::GitHub, state::State, Config};
+use forge_sync::{
+    archive::Archive,
+    engine,
+    forge::Forge,
+    github::GitHub,
+    model::{Comment, Issue, ItemSnapshot, Label, PullRef, Repository, User},
+    state::State,
+    Config,
+};
 use serde_json::json;
 use std::{
     fs,
@@ -19,7 +27,7 @@ use std::{
     name = "forge-sync",
     version,
     about = "Continuously mirror a GitHub organization to an independent forge",
-    long_about = "Discovers every repository in a GitHub organization, mirrors Git refs and issue/PR metadata to Forgejo, Codeberg, or GitLab, and writes a portable JSON archive. Never prompts or sends telemetry."
+    long_about = "Discovers repositories in a GitHub organization, mirrors Git branches, tags, and issue or pull-request metadata to Forgejo, Codeberg, or GitLab, and writes a JSON archive."
 )]
 struct Cli {
     #[command(subcommand)]
@@ -30,11 +38,11 @@ struct Cli {
 enum Command {
     /// Validate configuration, credentials, and both API endpoints without writing
     Doctor(Common),
-    /// Perform one idempotent synchronization pass
+    /// Perform one synchronization pass
     Sync(SyncArgs),
     /// Poll and synchronize continuously until SIGINT or SIGTERM
     Daemon(Common),
-    /// Read local synchronization state without contacting either forge
+    /// Show local synchronization state
     Status(Common),
     /// Create and show a completed, isolated sample mirror without tokens
     Demo {
@@ -168,11 +176,135 @@ fn run_demo(json_output: bool) -> Result<u8> {
     );
     let root = std::env::temp_dir().join(format!("forge-sync-demo-{nonce}"));
     fs::create_dir_all(root.join("target/harbor-tools/issues"))?;
-    fs::create_dir_all(root.join("archive/repositories/harbor-tools/items"))?;
-    fs::create_dir_all(root.join("state"))?;
+    let repository_fixture: serde_json::Value =
+        serde_json::from_str(include_str!("../examples/sample-mirror/repository.json"))?;
+    let pull_fixture: serde_json::Value = serde_json::from_str(include_str!(
+        "../examples/sample-mirror/pull-request-41.json"
+    ))?;
+    let repository = Repository {
+        id: 1,
+        name: repository_fixture["repository"]
+            .as_str()
+            .context("demo repository name")?
+            .into(),
+        full_name: format!(
+            "{}/{}",
+            repository_fixture["organization"]
+                .as_str()
+                .context("demo organization")?,
+            repository_fixture["repository"]
+                .as_str()
+                .context("demo repository name")?
+        ),
+        description: Some("Tide alerts and harbor notices".into()),
+        clone_url: "https://github.example/harbor-coop/harbor-tools.git".into(),
+        html_url: "https://github.example/harbor-coop/harbor-tools".into(),
+        archived: false,
+        private: true,
+        default_branch: "main".into(),
+        updated_at: "2026-08-28T08:00:00Z".into(),
+    };
+    let author = User {
+        login: pull_fixture["author"]
+            .as_str()
+            .context("demo author")?
+            .into(),
+        html_url: "https://github.example/marina".into(),
+    };
+    let issue = Issue {
+        id: 4100,
+        number: pull_fixture["number"]
+            .as_i64()
+            .context("demo pull-request number")?,
+        title: pull_fixture["title"]
+            .as_str()
+            .context("demo pull-request title")?
+            .into(),
+        body: Some("Make warning thresholds and tide times readable on a phone.".into()),
+        state: "open".into(),
+        user: author.clone(),
+        labels: vec![],
+        milestone: None,
+        pull_request: Some(PullRef {
+            url: pull_fixture["source_url"]
+                .as_str()
+                .context("demo source URL")?
+                .into(),
+        }),
+        html_url: pull_fixture["source_url"]
+            .as_str()
+            .context("demo source URL")?
+            .into(),
+        created_at: "2026-08-27T09:00:00Z".into(),
+        updated_at: "2026-08-28T08:00:00Z".into(),
+    };
+    let comments = vec![
+        Comment {
+            id: 4101,
+            body: pull_fixture["reviews"][0]["body"]
+                .as_str()
+                .context("demo review")?
+                .into(),
+            user: User {
+                login: "keon".into(),
+                html_url: "https://github.example/keon".into(),
+            },
+            html_url: format!("{}#pullrequestreview-4101", issue.html_url),
+            created_at: "2026-08-27T10:00:00Z".into(),
+            updated_at: "2026-08-27T10:00:00Z".into(),
+            kind: "review (approved)".into(),
+            path: None,
+            line: None,
+            issue_url: None,
+        },
+        Comment {
+            id: 4102,
+            body: pull_fixture["inline_comments"][0]["body"]
+                .as_str()
+                .context("demo inline comment")?
+                .into(),
+            user: User {
+                login: "keon".into(),
+                html_url: "https://github.example/keon".into(),
+            },
+            html_url: format!("{}#discussion_r4102", issue.html_url),
+            created_at: "2026-08-27T10:05:00Z".into(),
+            updated_at: "2026-08-27T10:05:00Z".into(),
+            kind: "inline review comment".into(),
+            path: Some(
+                pull_fixture["inline_comments"][0]["path"]
+                    .as_str()
+                    .context("demo comment path")?
+                    .into(),
+            ),
+            line: pull_fixture["inline_comments"][0]["line"].as_i64(),
+            issue_url: None,
+        },
+        Comment {
+            id: 4103,
+            body: pull_fixture["discussion_comments"][0]["body"]
+                .as_str()
+                .context("demo discussion comment")?
+                .into(),
+            user: author,
+            html_url: format!("{}#issuecomment-4103", issue.html_url),
+            created_at: "2026-08-27T10:10:00Z".into(),
+            updated_at: "2026-08-27T10:10:00Z".into(),
+            kind: "comment".into(),
+            path: None,
+            line: None,
+            issue_url: None,
+        },
+    ];
+    let pull_label = Label {
+        id: -1,
+        name: "forge-sync:pull-request".into(),
+        color: "174d67".into(),
+        description: Some("Mirrored GitHub pull request discussion".into()),
+    };
     fs::write(
         root.join("README.md"),
-        "# forge-sync completed sample mirror\n\nThis directory is disposable demo output. It contains a target-style record, local source-to-target mappings, audit events, and a JSON archive for the fictional Harbor Cooperative organization.\n",
+        "# forge-sync completed sample mirror\n\nThis disposable directory was built from the shipped Harbor Cooperative records using forge-sync's archive, mapping, audit, and rendering code.\n",
     )?;
     fs::write(
         root.join("target/harbor-tools/branches.txt"),
@@ -181,59 +313,49 @@ fn run_demo(json_output: bool) -> Result<u8> {
     fs::write(root.join("target/harbor-tools/tags.txt"), "v2.4.0\n")?;
     fs::write(
         root.join("target/harbor-tools/issues/41.md"),
-        "# [pull request] Make tide alerts readable\n\nAuthor: marina\nSource: https://github.example/harbor-coop/harbor-tools/pull/41\n\nReview: Please keep the alert threshold visible.\n\nInline comment: src/alerts.rs:18 — use the harbor timezone.\n",
+        format!(
+            "# {}\n\n{}\n\n{}",
+            issue.mirrored_title(),
+            issue.mirrored_body(),
+            comments
+                .iter()
+                .map(Comment::mirrored_body)
+                .collect::<Vec<_>>()
+                .join("\n\n")
+        ),
     )?;
-    fs::write(
-        root.join("archive/repositories/harbor-tools/items/41.json"),
-        include_str!("../examples/sample-mirror/pull-request-41.json"),
+    let state = State::open(&root.join("state"))?;
+    state.map("item", &repository.name, issue.id, 41, &issue.updated_at)?;
+    state.audit(
+        "start",
+        Some(&repository.name),
+        Some("repository"),
+        Some(repository.id),
+        "sample synchronization started",
     )?;
-    fs::write(
-        root.join("archive/repositories/harbor-tools/repository.json"),
-        include_str!("../examples/sample-mirror/repository.json"),
+    state.audit(
+        "copied",
+        Some(&repository.name),
+        Some("pull request"),
+        Some(issue.id),
+        "sample pull-request record copied",
     )?;
-    fs::write(
-        root.join("state/id-mappings.json"),
-        "{\n  \"github:issue:harbor-tools:41\": \"target:issue:harbor-tools:41\"\n}\n",
+    state.repository_ok(&repository.name, repository.id, "41")?;
+    state.audit(
+        "complete",
+        Some(&repository.name),
+        Some("repository"),
+        Some(repository.id),
+        "sample archive committed",
     )?;
-    fs::write(
-        root.join("state/audit-events.jsonl"),
-        "{\"event\":\"repository.created\",\"repository\":\"harbor-tools\"}\n{\"event\":\"pull_request.copied\",\"number\":41}\n{\"event\":\"archive.written\",\"path\":\"repositories/harbor-tools/items/41.json\"}\n",
+    let archive = Archive::new(&root.join("archive"), true)?;
+    archive.write_repository(
+        &repository,
+        &[pull_label],
+        &[],
+        &[ItemSnapshot { issue, comments }],
     )?;
-
-    let git = std::process::Command::new("git")
-        .args(["init", "-q"])
-        .current_dir(root.join("archive"))
-        .status()
-        .context("initialize the demo JSON archive")?;
-    if !git.success() {
-        anyhow::bail!("initialize the demo JSON archive failed");
-    }
-    for (key, value) in [
-        ("user.name", "forge-sync demo"),
-        ("user.email", "demo@forge-sync.invalid"),
-    ] {
-        let status = std::process::Command::new("git")
-            .args(["config", key, value])
-            .current_dir(root.join("archive"))
-            .status()?;
-        if !status.success() {
-            anyhow::bail!("configure the demo JSON archive failed");
-        }
-    }
-    let status = std::process::Command::new("git")
-        .args(["add", "."])
-        .current_dir(root.join("archive"))
-        .status()?;
-    if !status.success() {
-        anyhow::bail!("stage the demo JSON archive failed");
-    }
-    let status = std::process::Command::new("git")
-        .args(["commit", "-qm", "archive completed sample mirror"])
-        .current_dir(root.join("archive"))
-        .status()?;
-    if !status.success() {
-        anyhow::bail!("commit the demo JSON archive failed");
-    }
+    archive.commit()?;
 
     if json_output {
         println!(

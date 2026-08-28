@@ -7,12 +7,28 @@ import { makeConfig } from './config.js';
 const $ = (selector, root = document) => root.querySelector(selector);
 const demoPrefix = 'demo:forge-sync:';
 const isDemo = location.pathname.startsWith('/demo') || new URLSearchParams(location.search).get('demo') === '1';
+const newDemoSession = () => globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`;
+
+function setMeta(selector, value, attribute = 'content') {
+  document.querySelector(selector)?.setAttribute(attribute, value);
+}
 
 function activateDemo() {
   if (!isDemo) return;
   document.body.dataset.demo = 'true';
-  if (new URLSearchParams(location.search).get('demo') === '1') document.title = 'Demo — forge-sync';
-  localStorage.setItem(`${demoPrefix}session`, String(Date.now()));
+  if (new URLSearchParams(location.search).get('demo') === '1') {
+    const url = 'https://forge-sync.sociobot.in/?demo=1';
+    const description = 'Inspect forge-sync’s isolated completed sample mirror before you use a real organization.';
+    document.title = 'Demo — forge-sync';
+    setMeta('meta[name="description"]', description);
+    setMeta('meta[property="og:title"]', document.title);
+    setMeta('meta[property="og:description"]', description);
+    setMeta('meta[property="og:url"]', url);
+    setMeta('meta[name="twitter:title"]', document.title);
+    setMeta('meta[name="twitter:description"]', description);
+    setMeta('link[rel="canonical"]', url, 'href');
+  }
+  localStorage.setItem(`${demoPrefix}session`, newDemoSession());
   $('#demo-banner')?.removeAttribute('hidden');
   const panel = $('#demo-panel');
   if (panel) panel.hidden = false;
@@ -22,12 +38,20 @@ function resetDemo() {
     const key = localStorage.key(index);
     if (key?.startsWith(demoPrefix)) localStorage.removeItem(key);
   }
-  localStorage.setItem(`${demoPrefix}session`, String(Date.now()));
+  localStorage.setItem(`${demoPrefix}session`, newDemoSession());
   const note = $('#route-status');
   if (note) note.textContent = 'Demo reset. The sample data is new.';
 }
 activateDemo();
 $('#reset-demo')?.addEventListener('click', resetDemo);
+if (isDemo) {
+  document.querySelectorAll('a[href="/"]').forEach(link => link.addEventListener('click', () => {
+    for (let index = localStorage.length - 1; index >= 0; index -= 1) {
+      const key = localStorage.key(index);
+      if (key?.startsWith(demoPrefix)) localStorage.removeItem(key);
+    }
+  }));
+}
 
 const form = $('#config-form');
 const output = $('#config-output');
@@ -80,7 +104,8 @@ function goToHash(hash, push = true) {
   const target = $(hash);
   if (!target) return;
   savePosition();
-  if (push) history.pushState({ scrollY: 0, hash }, '', `${location.pathname}${location.search}${hash}`);
+  const destinationY = Math.max(0, window.scrollY + target.getBoundingClientRect().top);
+  if (push) history.pushState({ scrollY: destinationY, hash }, '', `${location.pathname}${location.search}${hash}`);
   target.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   setTimeout(() => focusDestination(target), 0);
 }
@@ -102,6 +127,10 @@ window.addEventListener('popstate', event => {
     else if (y === 0) focusDestination($('#main'));
   }, 0);
 });
+
+if (location.hash && $(location.hash)) {
+  requestAnimationFrame(() => focusDestination($(location.hash)));
+}
 
 function setOfflineBanner(show) {
   const banner = $('#network-state');

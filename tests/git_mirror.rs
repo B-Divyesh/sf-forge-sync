@@ -17,6 +17,7 @@ fn git(cwd: Option<&Path>, args: &[&str]) {
 
 #[test]
 fn mirrors_branches_and_tags_between_real_local_repositories() {
+    // @claim:git-refs-mirror
     let temp = tempfile::tempdir().unwrap();
     let source = temp.path().join("source.git");
     let target = temp.path().join("target.git");

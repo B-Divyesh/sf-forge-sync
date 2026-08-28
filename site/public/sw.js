@@ -1,4 +1,4 @@
-const CACHE = 'forge-sync-v2';
+const CACHE = 'forge-sync-polish-1';
 const SHELL = ['/', '/demo/', '/privacy/', '/terms/', '/404.html'];
 self.addEventListener('install', event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL))));
 self.addEventListener('activate', event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key))))));
