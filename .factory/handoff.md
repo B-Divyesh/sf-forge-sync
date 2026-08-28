@@ -1,82 +1,62 @@
-# forge-sync repair handoff — perfection loop 2
+# forge-sync adversarial review 3 handoff
 
 ## Delivered
 
-Repair implementation commit: `1a38c93a2235db2ae698fca1107ca68de87b315f`.
-CI browser-install repair: `39c9899cd2ea43ff04e492bbf976ef80eb3e3dda`.
+- Added `.factory/review-3.md` with a full cold-read, copy, demo, claim,
+  sandbox, history, routing, accessibility, link, visual-identity, and missed-
+  leverage review.
+- Verdict: **FAIL** with three blocking, two major, and four minor findings.
+- No product source or deployment was changed.
 
-- Added six real configured-run claims/tests for every README production
-  promise found in review 2: state/archive paths, daemon second pass,
-  discovery/refs/metadata, complete pull-request history, attribution, and
-  optional Git archive behavior.
-- Repaired document-route focus and route announcements for the one-click demo
-  and leave-demo paths; tested CTA, leave, Back, and Forward.
-- Rewrote the remaining vague/internal labels, split the README long sentence,
-  and named the leave-demo result. Updated the full copy audit and catalog line.
-- Kept the glacial ceramic visual system and original product assets intact.
-- Fixed CI to install Playwright Chromium before browser tests.
-- Deployed the built static site with `/opt/fleet/lib/deploy-static.sh
-  forge-sync dist/site`. The live footer reported build `39c9899c` after deploy.
+## Main blockers
 
-## Exact verification evidence
+1. The documented Rust 1.85 minimum is false for the locked dependency graph;
+   `cargo +1.85.0 build --locked` exits 101 because resolved ICU crates require
+   Rust 1.88.
+2. Review 1 B2 is only partly repaired: the live CLI demo uses hand-written
+   terminal blocks rather than a self-hosted recording of the real command,
+   and the displayed transcript differs from actual output.
+3. The README promise that `status` and `sync` emit JSON remains absent from
+   `.factory/claims.json`, reopening U20/R06.
 
-Fresh clone: `/tmp/forge-sync-polish2-clean.o8RWuj`, created with
-`git clone --no-local /work/repo` at repair commit `129944d` (the later
-`1a38c93` change was Rust formatting only, and `cargo fmt --check` passed on
-the final tree).
+The review also records unlisted production record-link/run-history behavior,
+the missing scale benchmark from the brief, a query-demo heading mismatch, a
+desktop first-screen fact below the fold, and two plain-word copy issues.
 
-```sh
-npm ci
-npm run test:claims       # 16/16 declared claims passed
-npm test                  # 13 Node/browser tests plus all Rust tests passed
-npm run build             # dist/site produced
-cargo fmt --check
-cargo clippy --all-targets -- -D warnings
-cargo package --allow-dirty
-```
+## Verification performed
 
-Final-tree local checks also passed:
-
-```sh
-npm run test:a11y -- http://127.0.0.1:4174
-```
-
-This reported 0 axe violations and 0 serious/critical findings. Build output
-is 5.92 KB raw JavaScript (2.57 KB gzip), 14.00 KB CSS (3.97 KB gzip), and a
-70.11 KB hero image. The initial JavaScript budget is therefore comfortably
-below 200 KB.
-
-Deployed checks passed:
-
-- `npm run test:a11y -- https://forge-sync.sociobot.in` — 0 axe violations,
-  0 serious/critical.
-- Fresh 390px browser: first CTA was in the first viewport; CTA entered demo;
-  demo heading received focus and an announcement; leaving focused the home
-  h1; the product 404 had the expected title and h1.
-- `https://forge-sync.sociobot.in/`, `/?demo=1`, `/demo/`, `/privacy/`,
-  `/terms/`, and `/404.html` returned product metadata, one main, and one h1.
-  `/definitely-missing-polish-2` returned HTTP 404 with product headers.
-- Screenshots: `.factory/evidence/polish-2-local/` and
-  `.factory/evidence/polish-2-live/` (ignored build evidence).
-
-## Run, test, deploy
+Clean clone: `/tmp/forge-sync-review3-clean.rdSq7R/repo` at
+`18ab53872546650039facbff88a6f04050a301ca`.
 
 ```sh
 npm ci
-npm test
-npm run test:claims
-npm run build
-cargo fmt --check
-cargo clippy --all-targets -- -D warnings
-cargo package --allow-dirty
-/opt/fleet/lib/deploy-static.sh forge-sync dist/site
+npm run test:claims   # PASS: all 16 declared claims
+npm test              # PASS: 13 Node/browser tests and all Rust tests
+npm run build         # PASS: dist/site produced
+npm run test:a11y -- https://forge-sync.sociobot.in
+                       # PASS: 0 axe violations
 ```
 
-`dist/site` is the static deployment artifact. The committed
-`site/public/staticwebapp.config.json` supplies the CSP, cache policy, and
-product-styled 404 status override.
+Additional checks:
 
-## Known gaps
+- Fresh Chromium at 390 × 844 and 1440 × 900.
+- Live one-click demo entry, Reset, exit, Back, Forward, focus, clipboard, and
+  configuration download.
+- Browser storage sentinel and full request interception; no non-demo storage
+  changed and no cross-origin request occurred.
+- Real `forge-sync demo --json` from an empty temporary directory with canary
+  token variables; output was isolated and contained SQLite state, target
+  records, JSON archive files, and a Git commit.
+- Live route metadata and heading inventory, designed HTTP-404 response,
+  security headers, internal/external link crawl, robots, and sitemap.
+- `/opt/fleet/lib/verify-url.sh https://forge-sync.sociobot.in
+  /tmp/forge-sync-review3-verify`: PASS with no console errors or missing alt
+  text.
+- `cargo +1.85.0 build --locked`: **FAIL**, exit 101, as documented in F-3-1.
 
-None. The unsupported paid checkout remains intentionally absent rather than
-advertised. No tracking, payment, or third-party runtime service was added.
+## Next steps
+
+Resolve every finding in `.factory/review-3.md`, add the missing claims and
+tests, regenerate the CLI demo surface from real command output, and repeat the
+entire adversarial review from a clean clone. The current release is not ready
+for a PASS verdict.
