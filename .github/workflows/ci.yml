@@ -5,6 +5,13 @@ on:
   pull_request:
 
 jobs:
+  minimum-rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.88.0
+      - run: cargo build --locked
+      - run: cargo test --locked
   verify:
     runs-on: ubuntu-latest
     steps:
@@ -21,4 +28,5 @@ jobs:
       - run: cargo fmt --check
       - run: cargo clippy --all-targets -- -D warnings
       - run: npm test
+      - run: npm run test:claims
       - run: npm run build:site

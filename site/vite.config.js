@@ -1,8 +1,13 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'node:path';
 import { execFileSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 
 const buildId = process.env.VITE_BUILD_ID || execFileSync('git', ['rev-parse', '--short=8', 'HEAD'], { encoding: 'utf8' }).trim();
+const demoTranscript = readFileSync(resolve(import.meta.dirname, 'public/demo-transcript.txt'), 'utf8')
+  .replaceAll('&', '&amp;')
+  .replaceAll('<', '&lt;')
+  .replaceAll('>', '&gt;');
 
 export default defineConfig({
   root: resolve(import.meta.dirname),
@@ -24,6 +29,8 @@ export default defineConfig({
   },
   plugins: [{
     name: 'forge-sync-build-id',
-    transformIndexHtml: html => html.replaceAll('__BUILD_ID__', buildId)
+    transformIndexHtml: html => html
+      .replaceAll('__BUILD_ID__', buildId)
+      .replaceAll('__DEMO_TRANSCRIPT__', demoTranscript)
   }]
 });

@@ -13,6 +13,15 @@ function setMeta(selector, value, attribute = 'content') {
   document.querySelector(selector)?.setAttribute(attribute, value);
 }
 
+function changeHeadingLevel(element, level) {
+  if (!element || element.tagName.toLowerCase() === level) return element;
+  const replacement = document.createElement(level);
+  for (const attribute of element.attributes) replacement.setAttribute(attribute.name, attribute.value);
+  replacement.innerHTML = element.innerHTML;
+  element.replaceWith(replacement);
+  return replacement;
+}
+
 function activateDemo() {
   if (!isDemo) return;
   document.body.dataset.demo = 'true';
@@ -27,6 +36,10 @@ function activateDemo() {
     setMeta('meta[name="twitter:title"]', document.title);
     setMeta('meta[name="twitter:description"]', description);
     setMeta('link[rel="canonical"]', url, 'href');
+    // The query-string demo is a real document route. Its first visible
+    // heading names that route, while the landing headline remains a later h2.
+    changeHeadingLevel($('#demo-panel-title'), 'h1');
+    changeHeadingLevel($('#hero-title'), 'h2');
   }
   localStorage.setItem(`${demoPrefix}session`, newDemoSession());
   $('#demo-banner')?.removeAttribute('hidden');

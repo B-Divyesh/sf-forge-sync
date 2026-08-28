@@ -139,6 +139,17 @@ test('routes, metadata, focus, and phone first action work', async () => {
   assert.equal(await page.title(), 'Demo — forge-sync');
   await page.waitForTimeout(20);
   assert.equal(await page.evaluate(() => document.activeElement?.id), 'demo-panel-title');
+  assert.equal(await page.locator('h1').count(), 1);
+  assert.equal(await page.locator('#demo-panel-title').evaluate(node => node.tagName), 'H1');
+  assert.equal(await page.locator('#hero-title').evaluate(node => node.tagName), 'H2');
+  const visibleHeadings = await page.locator('h1,h2,h3').evaluateAll(nodes => nodes
+    .filter(node => !node.closest('[hidden]') && getComputedStyle(node).display !== 'none')
+    .map(node => ({ tag: node.tagName, text: node.textContent.trim() })));
+  assert.deepEqual(visibleHeadings[0], { tag: 'H1', text: 'See a completed sample mirror.' });
+  const recording = page.locator('#demo-panel .demo-recording img');
+  assert.ok(await recording.isVisible());
+  assert.ok((await recording.boundingBox()).y < 844, 'the current-command recording must begin in the demo first screen');
+  assert.match(await page.locator('#demo-panel .demo-recording code').textContent(), /links between GitHub and target records: 1/);
   assert.match(await page.locator('#route-status').textContent(), /See a completed sample mirror/);
   await page.goto(base, { waitUntil: 'networkidle' });
   await page.getByRole('link', { name: 'Try it with sample data' }).first().click();
@@ -169,4 +180,17 @@ test('routes, metadata, focus, and phone first action work', async () => {
   assert.equal(await page.evaluate(() => document.activeElement?.id), 'configure-title');
   assert.ok(await page.evaluate(() => window.scrollY > 0));
   await context.close();
+
+  const desktop = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const desktopPage = await desktop.newPage();
+  await desktopPage.goto(base, { waitUntil: 'networkidle' });
+  const factBoxes = await desktopPage.locator('.facts li').evaluateAll(nodes => nodes.map(node => {
+    const box = node.getBoundingClientRect();
+    return { text: node.textContent.trim(), bottom: box.bottom };
+  }));
+  assert.equal(factBoxes.length, 3);
+  for (const fact of factBoxes) {
+    assert.ok(fact.bottom <= 900, `${fact.text} ends below the 1440 × 900 first screen at ${fact.bottom}`);
+  }
+  await desktop.close();
 });

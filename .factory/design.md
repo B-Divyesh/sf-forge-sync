@@ -32,6 +32,7 @@ The sync path is the core interaction motif: state changes draw from source to a
 
 - `site/ceramic-mirror.webp`: original AI-generated hero still showing two hand-thrown porcelain repository vessels connected by a fine cobalt path over a glacial ceramic plane. Generated for this product with the factory Azure `factory-image` deployment via `/opt/fleet/lib/gen-image.sh`, 27 August 2026. Prompt is preserved in `site/public/ceramic-mirror.prompt.json`. No source image, trademark, embedded text, or third-party asset was used. Product-owned output, used under the factory's generated-asset terms.
 - `site/public/og-image.webp` and `site/public/apple-touch-icon.png`: product-owned crops derived locally from `site/ceramic-mirror.webp`; no new source asset or third-party material.
+- `site/public/demo-recording.svg` and `site/public/demo-transcript.txt`: generated locally from the real `forge-sync demo` command and bundled Harbor Cooperative records by `scripts/generate-demo-recording.mjs`; no third-party material.
 - Directional marks, wordmark, status dots, and diagram lines are original CSS/SVG primitives authored in-repo; no icon library is shipped.
 
 The hero image explains the product's world (a precise transfer between durable stores), while live metadata counts and the configuration composer explain the actual operation. No decorative stock imagery is used.

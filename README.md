@@ -14,18 +14,22 @@ Run this before configuring a real organization:
 cargo run -- demo
 ```
 
+Open the isolated [browser sample](https://forge-sync.sociobot.in/?demo=1) in
+one click.
+
 The command creates a new temporary directory and prints its path. It does not
 read your configuration or token values. The output contains the fictional
 Harbor Cooperative `harbor-tools` repository, two branches, and one tag. It
-also contains a pull-request record, SQLite mapping, audit log, and committed
-JSON archive. Delete the printed directory when you finish.
+also contains a pull-request record and a committed JSON archive. SQLite stores
+links between GitHub and target records plus dated run history. Delete the
+printed directory when you finish.
 
 The source records are in [`examples/sample-mirror`](examples/sample-mirror/).
 See [`.factory/demo.md`](.factory/demo.md) for browser and CLI sandbox details.
 
 ## Install
 
-Build from source with Rust 1.85 or newer:
+Build from source with Rust 1.88 or newer:
 
 ```sh
 cargo install --path .
@@ -82,11 +86,19 @@ Run `forge-sync daemon --config forge-sync.toml` for continuous passes. Add
 - pull-request descriptions, reviews, inline comments, and discussion comments
   in a labeled target issue;
 - the author, time, and original GitHub link in copied bodies;
-- source-to-target ID links and audit events in SQLite; and
+- links between GitHub and target records plus dated run history in SQLite; and
 - JSON snapshots, optionally committed to a local Git archive.
 
 `forge-sync sync --dry-run` reports planned changes. It does not change either
-forge, Git data, local state, the audit log, or the JSON archive.
+forge, Git data, local state, dated run history, or the JSON archive.
+
+## Scale acceptance
+
+The local acceptance benchmark mirrors 50 repositories with 5,000 issues. It
+checks an initial pass against 30 minutes and a no-change pass against two
+minutes. The test reserves a 20% margin, so its limits are 24 minutes and 96
+seconds. It uses local forge endpoints to remove internet delay and prints the
+runner’s operating system, architecture, CPU parallelism, and measured times.
 
 ## Development
 

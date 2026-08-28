@@ -2,7 +2,7 @@
 name = "forge-sync"
 version = "0.1.0"
 edition = "2021"
-rust-version = "1.85"
+rust-version = "1.88"
 description = "Continuously mirror a GitHub organization to Forgejo, Codeberg, or GitLab"
 license = "MIT"
 repository = "https://github.com/B-Divyesh/sf-forge-sync"

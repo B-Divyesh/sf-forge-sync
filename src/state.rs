@@ -12,7 +12,9 @@ pub struct State {
 #[derive(Debug, Serialize)]
 pub struct Status {
     pub repositories: i64,
+    #[serde(rename = "record_links")]
     pub mappings: i64,
+    #[serde(rename = "run_history_entries")]
     pub audit_events: i64,
     pub last_success_at: Option<String>,
 }

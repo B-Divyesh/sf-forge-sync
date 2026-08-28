@@ -22,7 +22,13 @@
     "test:claim:pull-request-history": "cargo test --test production_claims claim_configured_run_renders_every_pull_request_history_field",
     "test:claim:copied-attribution": "cargo test --test production_claims claim_configured_run_copies_author_time_and_github_links",
     "test:claim:optional-archive": "cargo test --test production_claims claim_configured_run_optionally_commits_the_json_archive",
+    "test:claim:minimum-rust": "node --test --test-name-pattern=@claim:minimum-rust-build site/test/toolchain.test.js",
+    "test:claim:demo-recording": "node --test --test-name-pattern=@claim:demo-recording-current-output site/test/demo-recording.test.js",
+    "test:claim:json-output": "cargo test --test production_claims claim_status_and_sync_emit_json_documents",
+    "test:claim:record-history": "cargo test --test production_claims claim_configured_run_persists_record_links_and_dated_history",
+    "test:claim:scale": "cargo test --release --test scale_benchmark claim_organization_scale_initial_and_incremental_times -- --ignored --nocapture",
     "test:claims": "node scripts/run-claims.mjs",
+    "record:demo": "node scripts/generate-demo-recording.mjs",
     "test:a11y": "node scripts/a11y.mjs",
     "build": "npm run build:site",
     "build:site": "vite build --config site/vite.config.js"

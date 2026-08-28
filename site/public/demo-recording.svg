@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="410" viewBox="0 0 1200 410" role="img" aria-labelledby="title description" data-transcript-sha256="a1bf86217cf7c5909f41c7164072f5ea465dca9e1818602825d3da94bdfd1cc2">
+  <title id="title">Captured forge-sync demo terminal output</title>
+  <desc id="description">The current forge-sync demo command completes an isolated Harbor Cooperative sample mirror and prints its temporary output path.</desc>
+  <rect width="1200" height="410" rx="10" fill="#10201f"/>
+  <path d="M0 62H1200" stroke="#40504e"/>
+  <circle cx="30" cy="31" r="7" fill="none" stroke="#78908b"/>
+  <circle cx="54" cy="31" r="7" fill="none" stroke="#78908b"/>
+  <circle cx="78" cy="31" r="7" fill="none" stroke="#78908b"/>
+  <text x="1140" y="37" text-anchor="end" class="label">captured CLI output</text>
+  <style>.command,.output,.label{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.command{font-size:20px;fill:#9bd2b4}.output{font-size:18px;fill:#f3f4ee}.label{font-size:15px;fill:#aebbb6;letter-spacing:1px}</style>
+  <text x="54" y="112" class="command">$ forge-sync demo</text>
+  <text x="54" y="150" class="output">Completed sample mirror — no tokens used</text>
+  <text x="54" y="188" class="output">  repository: harbor-tools</text>
+  <text x="54" y="226" class="output">  branches: 2 · tags: 1 · issue records: 1 · pull-request records: 1</text>
+  <text x="54" y="264" class="output">  links between GitHub and target records: 1 · dated run history entries: 3</text>
+  <text x="54" y="302" class="output">  JSON archive: committed</text>
+  <text x="54" y="340" class="output">Demo output: /tmp/forge-sync-demo-…</text>
+  <text x="54" y="378" class="output">Remove that directory when you are done; forge-sync did not read or write your configuration.</text>
+</svg>

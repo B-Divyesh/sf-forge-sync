@@ -465,3 +465,91 @@ fn claim_configured_run_optionally_commits_the_json_archive() {
     assert!(without_git.archive_dir.join("manifest.json").is_file());
     assert!(!without_git.archive_dir.join(".git").exists());
 }
+
+#[test]
+fn claim_status_and_sync_emit_json_documents() {
+    // @claim:status-sync-json-output
+    let fixture = Fixture::new(true, 1);
+    fixture.run();
+
+    let status = Command::new(env!("CARGO_BIN_EXE_forge-sync"))
+        .args([
+            "status",
+            "--config",
+            fixture.config_path.to_str().unwrap(),
+            "--json",
+        ])
+        .output()
+        .unwrap();
+    assert!(
+        status.status.success(),
+        "{}",
+        String::from_utf8_lossy(&status.stderr)
+    );
+    let status_json: Value = serde_json::from_slice(&status.stdout).unwrap();
+    assert_eq!(status_json["repositories"], 2);
+    assert!(status_json["record_links"].as_i64().unwrap() >= 8);
+    assert!(status_json["run_history_entries"].as_i64().unwrap() >= 4);
+    assert!(status_json.get("mappings").is_none());
+    assert!(status_json.get("audit_events").is_none());
+    assert!(status_json["last_success_at"].is_string());
+
+    let sync = Command::new(env!("CARGO_BIN_EXE_forge-sync"))
+        .args([
+            "sync",
+            "--config",
+            fixture.config_path.to_str().unwrap(),
+            "--json",
+        ])
+        .env("FORGE_SYNC_PRODUCTION_SOURCE", "source-canary")
+        .env("FORGE_SYNC_PRODUCTION_TARGET", "target-canary")
+        .output()
+        .unwrap();
+    assert!(
+        sync.status.success(),
+        "{}",
+        String::from_utf8_lossy(&sync.stderr)
+    );
+    let sync_json: Value = serde_json::from_slice(&sync.stdout).unwrap();
+    assert_eq!(sync_json["discovered"], 2);
+    assert_eq!(sync_json["synchronized"], 2);
+    assert_eq!(sync_json["failed"], 0);
+    assert_eq!(sync_json["dry_run"], false);
+    assert!(sync_json["started_at"].is_string());
+    assert!(sync_json["duration_ms"].is_number());
+    assert!(sync_json["errors"].is_array());
+}
+
+#[test]
+fn claim_configured_run_persists_record_links_and_dated_history() {
+    // @claim:configured-record-links-run-history
+    let fixture = Fixture::new(true, 1);
+    fixture.run();
+    let connection = rusqlite::Connection::open(fixture.state_dir.join("state.sqlite3")).unwrap();
+    let links: i64 = connection
+        .query_row("SELECT COUNT(*) FROM mappings", [], |row| row.get(0))
+        .unwrap();
+    let history: Vec<(String, String)> = connection
+        .prepare("SELECT at, action FROM audit ORDER BY id")
+        .unwrap()
+        .query_map([], |row| Ok((row.get(0)?, row.get(1)?)))
+        .unwrap()
+        .collect::<Result<_, _>>()
+        .unwrap();
+    assert!(links >= 8, "expected persisted links, found {links}");
+    assert!(history.len() >= 4, "expected dated run history");
+    assert!(history
+        .iter()
+        .all(|(at, _)| at.contains('T') && (at.ends_with('Z') || at.ends_with("+00:00"))));
+    assert!(history.iter().any(|(_, action)| action == "start"));
+    assert!(history.iter().any(|(_, action)| action == "complete"));
+
+    let status = Command::new(env!("CARGO_BIN_EXE_forge-sync"))
+        .args(["status", "--config", fixture.config_path.to_str().unwrap()])
+        .output()
+        .unwrap();
+    assert!(status.status.success());
+    let text = String::from_utf8(status.stdout).unwrap();
+    assert!(text.contains("Links between GitHub and target records:"));
+    assert!(text.contains("Dated run history entries:"));
+}

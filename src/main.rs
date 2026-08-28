@@ -119,7 +119,7 @@ fn execute(cli: Cli) -> Result<u8> {
                 println!("{}", serde_json::to_string(&status)?);
             } else {
                 println!(
-                    "Repositories: {}\nMappings: {}\nAudit events: {}\nLast success: {}",
+                    "Repositories: {}\nLinks between GitHub and target records: {}\nDated run history entries: {}\nLast success: {}",
                     status.repositories,
                     status.mappings,
                     status.audit_events,
@@ -304,7 +304,7 @@ fn run_demo(json_output: bool) -> Result<u8> {
     };
     fs::write(
         root.join("README.md"),
-        "# forge-sync completed sample mirror\n\nThis disposable directory was built from the shipped Harbor Cooperative records using forge-sync's archive, mapping, audit, and rendering code.\n",
+        "# forge-sync completed sample mirror\n\nThis disposable directory was built from the shipped Harbor Cooperative records using forge-sync's archive, record-link, run-history, and rendering code.\n",
     )?;
     fs::write(
         root.join("target/harbor-tools/branches.txt"),
@@ -368,7 +368,8 @@ fn run_demo(json_output: bool) -> Result<u8> {
         println!("Completed sample mirror — no tokens used");
         println!("  repository: harbor-tools");
         println!("  branches: 2 · tags: 1 · issue records: 1 · pull-request records: 1");
-        println!("  source-to-target mappings: 1 · audit events: 3 · JSON archive: committed");
+        println!("  links between GitHub and target records: 1 · dated run history entries: 3");
+        println!("  JSON archive: committed");
         println!("Demo output: {}", root.display());
         println!("Remove that directory when you are done; forge-sync did not read or write your configuration.");
     }

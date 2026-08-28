@@ -1,14 +1,14 @@
 [
   {
     "id": "demo-completed-mirror",
-    "claim": "The CLI sample creates isolated output with branches, tags, a rendered pull-request record, real SQLite mappings and audit events, and a committed JSON archive without reading configuration or token values.",
+    "claim": "The CLI sample creates isolated output with branches, tags, a rendered pull-request record, SQLite record links, dated run history, and a committed JSON archive without reading configuration or token values.",
     "where": "landing sample panel, demo page, README",
     "test": "npm run test:claim:demo-cli",
     "sandbox": "fresh CLI process with canary tokens and an invalid configuration in its working directory; inspect only its new operating-system temporary directory"
   },
   {
     "id": "demo-browser-isolation",
-    "claim": "The browser sample uses demo-prefixed storage; reset replaces only its demo session and Start for real discards it without changing non-demo storage.",
+    "claim": "The browser sample uses demo-prefixed storage; reset replaces only its demo session and leaving demo discards it without changing non-demo storage.",
     "where": "landing demo banner, demo page, privacy page",
     "test": "npm run test:claim:demo-browser",
     "sandbox": "fresh Playwright context with a non-demo sentinel; enter /?demo=1, reset, leave, and inspect storage and every request"
@@ -43,7 +43,7 @@
   },
   {
     "id": "dry-run-read-only",
-    "claim": "A dry run does not write target data, local state, audit data, or an archive, and a following real run creates the planned records.",
+    "claim": "A dry run does not write target data, local state, dated run history, or an archive, and a following real run creates the planned records.",
     "where": "README What it records",
     "test": "npm run test:claim:dry-run",
     "sandbox": "fresh local Git repositories and source/target HTTP mocks; compare dry-run and real-run requests and files"
@@ -110,5 +110,40 @@
     "where": "README What it records",
     "test": "npm run test:claim:optional-archive",
     "sandbox": "two configured local runs with git_archive enabled and disabled; inspect JSON output and Git repository presence"
+  },
+  {
+    "id": "minimum-rust-build",
+    "claim": "The locked product builds and tests with the documented minimum Rust 1.88 toolchain.",
+    "where": "README Install, Cargo package metadata",
+    "test": "npm run test:claim:minimum-rust",
+    "sandbox": "install Rust 1.88.0 with the minimal profile, use a fresh target directory, then run cargo build --locked and cargo test --locked"
+  },
+  {
+    "id": "demo-recording-current-output",
+    "claim": "The self-hosted demo recording and transcript are generated from the current forge-sync demo command output.",
+    "where": "query demo panel, landing sample section, demo route",
+    "test": "npm run test:claim:demo-recording",
+    "sandbox": "run the real binary against the bundled sample, normalize only its new temporary path, remove that output, and byte-compare the generated SVG and transcript"
+  },
+  {
+    "id": "status-sync-json-output",
+    "claim": "forge-sync status and sync each emit one parseable JSON document with their documented fields when --json is used.",
+    "where": "README Configure a real mirror",
+    "test": "npm run test:claim:json-output",
+    "sandbox": "temporary configured source and target forge servers; run both real CLI commands, parse complete stdout, and assert each documented field"
+  },
+  {
+    "id": "configured-record-links-run-history",
+    "claim": "A configured run persists links between GitHub and target records plus dated run history in SQLite.",
+    "where": "README What it records, landing sample, demo route, CLI status",
+    "test": "npm run test:claim:record-history",
+    "sandbox": "temporary configured two-repository run; query link and dated history rows in SQLite and inspect the human status labels"
+  },
+  {
+    "id": "organization-scale-performance",
+    "claim": "The deterministic local benchmark mirrors 50 repositories with 5,000 issues initially within 30 minutes and incrementally within two minutes, while reserving a 20% timing margin.",
+    "where": "brief success measure, README Scale acceptance",
+    "test": "npm run test:claim:scale",
+    "sandbox": "release build against local HTTP and Git forge fixtures; time a 50-repository, 5,000-issue initial pass and unchanged pass with limits of 24 minutes and 96 seconds"
   }
 ]

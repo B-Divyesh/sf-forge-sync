@@ -1,0 +1,8 @@
+$ forge-sync demo
+Completed sample mirror — no tokens used
+  repository: harbor-tools
+  branches: 2 · tags: 1 · issue records: 1 · pull-request records: 1
+  links between GitHub and target records: 1 · dated run history entries: 3
+  JSON archive: committed
+Demo output: /tmp/forge-sync-demo-…
+Remove that directory when you are done; forge-sync did not read or write your configuration.
