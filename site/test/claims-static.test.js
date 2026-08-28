@@ -35,3 +35,8 @@ test('all routes ship complete product metadata and the shared skeleton', async 
     }
   }
 });
+
+test('README documents only tested installation paths', async () => {
+  const readme = await readFile('README.md', 'utf8');
+  assert.doesNotMatch(readme, /\bdocker\b|\bpodman\b|container/i);
+});

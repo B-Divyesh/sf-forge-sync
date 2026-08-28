@@ -9,6 +9,19 @@ const demoPrefix = 'demo:forge-sync:';
 const isDemo = location.pathname.startsWith('/demo') || new URLSearchParams(location.search).get('demo') === '1';
 const newDemoSession = () => globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`;
 
+function clearDemoStorage() {
+  for (let index = localStorage.length - 1; index >= 0; index -= 1) {
+    const key = localStorage.key(index);
+    if (key?.startsWith(demoPrefix)) localStorage.removeItem(key);
+  }
+}
+
+function isDemoUrl(href) {
+  const url = new URL(href, location.href);
+  return url.origin === location.origin
+    && (url.pathname.startsWith('/demo') || url.searchParams.get('demo') === '1');
+}
+
 function setMeta(selector, value, attribute = 'content') {
   document.querySelector(selector)?.setAttribute(attribute, value);
 }
@@ -23,7 +36,10 @@ function changeHeadingLevel(element, level) {
 }
 
 function activateDemo() {
-  if (!isDemo) return;
+  if (!isDemo) {
+    clearDemoStorage();
+    return;
+  }
   document.body.dataset.demo = 'true';
   if (new URLSearchParams(location.search).get('demo') === '1') {
     const url = 'https://forge-sync.sociobot.in/?demo=1';
@@ -41,30 +57,40 @@ function activateDemo() {
     changeHeadingLevel($('#demo-panel-title'), 'h1');
     changeHeadingLevel($('#hero-title'), 'h2');
   }
-  localStorage.setItem(`${demoPrefix}session`, newDemoSession());
+  if (!localStorage.getItem(`${demoPrefix}session`)) {
+    localStorage.setItem(`${demoPrefix}session`, newDemoSession());
+  }
   $('#demo-banner')?.removeAttribute('hidden');
   const panel = $('#demo-panel');
   if (panel) panel.hidden = false;
 }
 function resetDemo() {
-  for (let index = localStorage.length - 1; index >= 0; index -= 1) {
-    const key = localStorage.key(index);
-    if (key?.startsWith(demoPrefix)) localStorage.removeItem(key);
-  }
+  clearDemoStorage();
   localStorage.setItem(`${demoPrefix}session`, newDemoSession());
   const note = $('#route-status');
   if (note) note.textContent = 'Demo reset. The sample data is new.';
 }
 activateDemo();
 $('#reset-demo')?.addEventListener('click', resetDemo);
+
+// Demo state belongs only to an active demo document. Clear it before an
+// ordinary same-tab link leaves the sandbox, including legal, home, and
+// external destinations. Demo-to-demo links deliberately retain the session.
 if (isDemo) {
-  document.querySelectorAll('a[href="/"]').forEach(link => link.addEventListener('click', () => {
-    for (let index = localStorage.length - 1; index >= 0; index -= 1) {
-      const key = localStorage.key(index);
-      if (key?.startsWith(demoPrefix)) localStorage.removeItem(key);
-    }
-  }));
+  document.addEventListener('click', event => {
+    const link = event.target.closest('a[href]');
+    if (!link || event.defaultPrevented || event.button !== 0
+      || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey
+      || link.target && link.target !== '_self' || link.hasAttribute('download')) return;
+    if (!isDemoUrl(link.href)) clearDemoStorage();
+  }, true);
 }
+
+// A Back/Forward visit can restore a document from bfcache without rerunning
+// its module. Reconcile storage whenever that document becomes visible: a
+// non-demo route discards the sandbox; a demo route restores its banner and
+// session without replacing it on reload or demo-to-demo navigation.
+window.addEventListener('pageshow', activateDemo);
 
 const form = $('#config-form');
 const output = $('#config-output');
@@ -73,7 +99,7 @@ function renderConfig() {
   if (!form || !output || !status) return;
   try {
     output.textContent = makeConfig(Object.fromEntries(new FormData(form)));
-    status.textContent = 'Configuration ready. Add token environment-variable names when you run the CLI.';
+    status.textContent = 'Configuration ready. Set the named token environment variables before you run the CLI.';
     status.dataset.kind = 'success';
   } catch (error) {
     output.textContent = '# Complete the fields above to generate the configuration.';

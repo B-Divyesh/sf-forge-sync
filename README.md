@@ -36,13 +36,6 @@ cargo install --path .
 forge-sync --help
 ```
 
-Or run the container:
-
-```sh
-docker build -t forge-sync .
-docker run --rm -v "$PWD:/data" --env-file .env forge-sync sync --config /data/forge-sync.toml
-```
-
 ## Configure a real mirror
 
 Create `forge-sync.toml`. Name the environment variables that hold tokens.

@@ -11,7 +11,7 @@
     "claim": "The browser sample uses demo-prefixed storage; reset replaces only its demo session and leaving demo discards it without changing non-demo storage.",
     "where": "landing demo banner, demo page, privacy page",
     "test": "npm run test:claim:demo-browser",
-    "sandbox": "fresh Playwright context with a non-demo sentinel; enter /?demo=1, reset, leave, and inspect storage and every request"
+    "sandbox": "fresh Playwright context with a non-demo sentinel; enter /?demo=1 and /demo/, reload, reset, move between demo URLs, leave through legal, home, external-link, Back, and Forward paths, then inspect storage and every request"
   },
   {
     "id": "configuration-has-no-token-field",

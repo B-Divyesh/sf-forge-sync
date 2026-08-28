@@ -7,8 +7,11 @@ fictional Harbor Cooperative output and stores only a `demo:forge-sync:session`
 marker in browser local storage. The persistent banner says that it is sample
 data. **Reset demo** removes every `demo:forge-sync:` key and starts a new
 marker. **Leave demo and build configuration** removes every demo key and
-returns to `/`. Keys outside the demo prefix are never read, changed, or
-removed.
+returns to `/`. Any same-tab link from either demo URL to Home, Privacy, Terms,
+the site source, or another non-demo URL removes the same keys. Back and
+Forward clear the keys whenever they arrive at a non-demo page. Reloading or
+moving between `?demo=1` and `/demo/` keeps the current demo session. Keys
+outside the demo prefix are never read, changed, or removed.
 
 ## CLI entry
 

@@ -1,4 +1,4 @@
-# Landing copy audit — polish round 3
+# Landing copy audit — polish round 4
 
 Words are whitespace-delimited. Commands, file paths, generated terminal
 output, the wordmark, and forge names inside form options are excluded. This
@@ -40,7 +40,7 @@ lists every visitor-facing landing and demo-mode unit in `site/index.html` and
 | Closing/footer | Start with sample data; See the sample, then build your configuration. | 4; 8 | OK |
 | Footer | Mirror GitHub organizations to another forge.; Privacy; Terms; GitHub source | 6; 1; 1; 2 | OK |
 | Dynamic success | Demo reset. The sample data is new. | 2; 5 | Claim: demo-browser-isolation |
-| Dynamic success | Configuration ready. Add token environment-variable names when you run the CLI. | 2; 9 | OK |
+| Dynamic success | Configuration ready. Set the named token environment variables before you run the CLI. | 2; 11 | OK — names are already in the generated configuration |
 | Dynamic feedback | Configuration copied. Clipboard access was blocked. Select the configuration and copy it manually. | 2; 4; 7 | OK |
 | Dynamic error | Complete the fields above to generate the configuration. | 8 | OK |
 | Dynamic validation | Use a valid GitHub organization name.; Use a valid target owner or namespace.; Enter a complete target URL, including https://.; Use HTTPS for a remote target. | 6; 7; 7; 6 | OK |

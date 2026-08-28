@@ -1,1 +1,1 @@
-Mirror GitHub organizations to Forgejo, Codeberg, or GitLab with issues, reviews, and a local JSON archive.
+Mirror GitHub organizations to another forge with issues, pull-request history, and a JSON archive.

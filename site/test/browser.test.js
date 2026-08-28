@@ -27,28 +27,90 @@ test('@claim:demo-browser-isolation', async () => {
   const page = await context.newPage();
   const requests = [];
   page.on('request', request => requests.push(request.url()));
+
+  async function keys() {
+    return (await page.evaluate(() => Object.keys(localStorage))).sort();
+  }
+  async function assertOutsideDemo() {
+    assert.deepEqual(await keys(), ['real:forge-sync:sentinel']);
+    assert.equal(await page.evaluate(() => localStorage.getItem('real:forge-sync:sentinel')), 'keep');
+  }
+  async function enter(path) {
+    await page.goto(`${base}${path}`, { waitUntil: 'networkidle' });
+    await assert.doesNotReject(() => page.getByText('Demo — sample data, nothing is saved.').waitFor());
+    assert.deepEqual(await keys(), ['demo:forge-sync:session', 'real:forge-sync:sentinel']);
+  }
+
   await page.goto(base, { waitUntil: 'networkidle' });
   await page.evaluate(() => localStorage.setItem('real:forge-sync:sentinel', 'keep'));
   assert.equal(await page.locator('#demo-banner').isVisible(), false);
-  await page.goto(`${base}/?demo=1`, { waitUntil: 'networkidle' });
-  await assert.doesNotReject(() => page.getByText('Demo — sample data, nothing is saved.').waitFor());
+  await enter('/?demo=1');
   await assert.doesNotReject(() => page.getByRole('button', { name: 'Reset demo' }).waitFor());
   assert.equal(await page.title(), 'Demo — forge-sync');
   assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'), 'https://forge-sync.sociobot.in/?demo=1');
   assert.match(await page.locator('#demo-panel').innerText(), /harbor-tools[\s\S]*pull-request record[\s\S]*JSON archive/);
-  const storageBefore = await page.evaluate(() => Object.keys(localStorage));
+  const storageBefore = await keys();
   assert.deepEqual(storageBefore.sort(), ['demo:forge-sync:session', 'real:forge-sync:sentinel']);
   const sessionBefore = await page.evaluate(() => localStorage.getItem('demo:forge-sync:session'));
+
+  await page.reload({ waitUntil: 'networkidle' });
+  assert.equal(await page.evaluate(() => localStorage.getItem('demo:forge-sync:session')), sessionBefore, 'reload keeps the demo session');
+
   await page.getByRole('button', { name: 'Reset demo' }).click();
-  const storageAfter = await page.evaluate(() => Object.keys(localStorage));
+  const storageAfter = await keys();
   assert.deepEqual(storageAfter.sort(), ['demo:forge-sync:session', 'real:forge-sync:sentinel']);
   assert.equal(await page.evaluate(() => localStorage.getItem('real:forge-sync:sentinel')), 'keep');
   assert.notEqual(await page.evaluate(() => localStorage.getItem('demo:forge-sync:session')), sessionBefore);
+
+  await page.getByRole('link', { name: 'Open the full demo record' }).click();
+  await page.waitForLoadState('networkidle');
+  assert.match(page.url(), /\/demo\/$/);
+  assert.deepEqual(await keys(), ['demo:forge-sync:session', 'real:forge-sync:sentinel']);
+
+  await page.getByRole('link', { name: 'Privacy' }).first().click();
+  await page.waitForLoadState('networkidle');
+  await assertOutsideDemo();
+  await page.goBack();
+  await page.waitForLoadState('networkidle');
+  assert.deepEqual(await keys(), ['demo:forge-sync:session', 'real:forge-sync:sentinel']);
+  await page.goForward();
+  await page.waitForLoadState('networkidle');
+  await assertOutsideDemo();
+
+  await enter('/demo/');
+  await page.getByRole('link', { name: 'Terms' }).click();
+  await page.waitForLoadState('networkidle');
+  await assertOutsideDemo();
+
+  await enter('/?demo=1');
+  await page.getByRole('link', { name: 'forge-sync home' }).click();
+  await page.waitForLoadState('networkidle');
+  await assertOutsideDemo();
+
+  await enter('/demo/');
+  await page.getByRole('link', { name: /GitHub source/ }).evaluate(link => {
+    link.addEventListener('click', event => event.preventDefault(), { once: true });
+  });
+  await page.getByRole('link', { name: /GitHub source/ }).click();
+  await page.waitForTimeout(50);
+  await assertOutsideDemo();
+
+  await page.goto(base, { waitUntil: 'networkidle' });
+  await page.getByRole('link', { name: 'Try it with sample data' }).first().click();
+  await page.waitForLoadState('networkidle');
+  assert.deepEqual(await keys(), ['demo:forge-sync:session', 'real:forge-sync:sentinel']);
+  await page.goBack();
+  await page.waitForLoadState('networkidle');
+  await assertOutsideDemo();
+  await page.goForward();
+  await page.waitForLoadState('networkidle');
+  assert.deepEqual(await keys(), ['demo:forge-sync:session', 'real:forge-sync:sentinel']);
+
   await page.getByRole('link', { name: 'Leave demo and build configuration' }).first().click();
   await page.waitForLoadState('networkidle');
   assert.equal(page.url(), `${base}/`);
   assert.equal(await page.locator('#demo-banner').isVisible(), false);
-  assert.deepEqual(await page.evaluate(() => Object.keys(localStorage)), ['real:forge-sync:sentinel']);
+  await assertOutsideDemo();
   assert.ok(requests.every(url => new URL(url).origin === base), requests.join('\n'));
   await context.close();
 });
@@ -67,6 +129,7 @@ test('@claim:configuration-has-no-token-field', async () => {
   assert.match(config, /token_env = "GITHUB_TOKEN"/);
   assert.doesNotMatch(config, /token\s*=|secret|pat_/i);
   assert.equal(await page.locator('input[type="password"]').count(), 0);
+  assert.equal(await page.locator('#config-status').textContent(), 'Configuration ready. Set the named token environment variables before you run the CLI.');
   assert.ok(requests.every(url => new URL(url).origin === base), requests.join('\n'));
   await context.close();
 });
