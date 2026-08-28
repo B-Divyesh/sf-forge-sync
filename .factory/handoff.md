@@ -1,43 +1,66 @@
-# forge-sync adversarial review 1 handoff — FAIL
+# forge-sync repair handoff — perfection loop 1
 
-Reviewed the deployed product and clean repository at
-`b3d507fde6d9e89a9002027087aff72b35bbb889`. The full evidence-backed result is
-in `.factory/review-1.md`.
+## Delivered
 
-## What was done
+Product repair commit: `7cc585aa2def1a1842a23d6a257a9643b265f0c8`.
 
-- Opened the live home page in fresh 390 × 844 and 1440 × 900 Chromium
-  contexts before scrolling.
-- Audited every landing/README sentence and visible copy unit for length,
-  jargon, marketing language, terminology, heading context, and action naming.
-- Tried `/demo`, `?demo=1`, and `forge-sync demo` from an empty temporary
-  directory; no demo exists.
-- Checked for `.factory/claims.json` and `@claim:` tests; both are absent, then
-  inventoried every unlisted live/README claim.
-- Exercised same-origin network behavior and an offline reload, crawled links,
-  inspected metadata/routes/404/history/focus/header/footer, and reviewed the
-  product's visual identity.
-- Changed no product code.
+- Replaced the vague first screen with the requested maintainer-focused
+  headline, one primary sample action, visible explanation, and three plain
+  facts. At 390 px the copy and action now precede the ceramic art.
+- Added `forge-sync demo`, shipped Harbor Cooperative fixture JSON, and an
+  inspectable temporary output tree with target records, branches, tags,
+  pull-request review data, mappings, audit events, and a committed archive.
+- Added `/?demo=1` and `/demo/`, persistent demo banner, Reset demo, Start for
+  real, and a `demo:forge-sync:` browser-storage namespace. The paid kit was
+  removed because its only checkout route was dead.
+- Added claims, isolated tests, demo documentation, plain-words audit, catalog
+  description, product 404 page, route metadata, OG artwork, touch icon,
+  robots/sitemap, and Static Web Apps 404 response override.
+- Made every route use the same header/footer. Hash navigation now manages
+  History API state, scroll position, focus, and polite route announcements.
 
-## How to verify
+The glacial ceramic visual system is retained. `og-image.webp` and the touch
+icon are crops derived from the existing product-owned ceramic illustration;
+its provenance remains in `.factory/design.md`.
+
+## Verification evidence
+
+Clean clone: `/tmp/forge-sync-clean.SDFm0e` from commit `7cc585a`.
 
 ```sh
 npm ci
+npm run test:claim:demo-cli
+npm run test:claim:demo-browser
+npm run test:claim:configuration
+npm run test:claim:offline
+npm run test:claim:license
 npm test
 npm run build
-npm run test:a11y -- https://forge-sync.sociobot.in
-mkdir -p .factory/evidence/verify-url
-VERIFY_NODE_MODULES="$PWD/node_modules" /opt/fleet/lib/verify-url.sh \
-  https://forge-sync.sociobot.in .factory/evidence/verify-url
+cargo clippy --all-targets -- -D warnings
+cargo package --allow-dirty
 ```
 
-The clean-clone test/build, live axe scan, and URL smoke verifier passed. The
-review still fails on four blockers: unclear first screen, no sandbox demo,
-missing claims contract/tests, and generic broken deep-route handling.
+All commands passed. `npm test` passed 9 Node/browser tests and 9 Rust tests.
+Every entry in `.factory/claims.json` passed from the clean clone.
 
-## Known gaps / next steps
+Local production-site checks also passed:
 
-Implement B1–B4 first. Then repair the dead checkout, metadata/crawl files,
-focus/history handling, and shared header/footer. Apply the exact copy rewrites
-and claim-test requirements in `.factory/review-1.md`, rerun from a clean clone,
-and repeat this cold review.
+- `npm run test:a11y -- http://127.0.0.1:4174` — 0 axe violations; 0
+  serious/critical across home, demo, privacy, terms, and 404.
+- `/opt/fleet/lib/verify-url.sh http://127.0.0.1:4174/ ...` — title, `lang`,
+  one h1, main, image alt coverage, and console checks passed. Evidence:
+  `.factory/evidence/verify-url-round1/verify.json`.
+- Lighthouse mobile local production build: performance **99**, accessibility
+  **100**. Evidence: `.factory/evidence/lighthouse-round1.json`.
+- Production build: JS 4,916 bytes raw / 2.23 KB gzip; CSS 13,777 bytes raw /
+  3.90 KB gzip; hero 70 KB; derived OG image 31,882 bytes.
+
+## Run and deploy
+
+Build the static deployment with `npm run build`; deploy `dist/site` using the
+work-order static deployment configuration. The committed
+`site/public/staticwebapp.config.json` carries CSP, cache headers, and the
+product 404 response override.
+
+No known blocking findings remain. The only intentionally omitted surface is
+the unsupported paid Migration Kit; no checkout or license claim is shipped.
