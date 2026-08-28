@@ -1,0 +1,67 @@
+{
+  "routes": {
+    "/": {
+      "status": 200,
+      "title": "forge-sync — mirror a GitHub organization",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://forge-sync.sociobot.in/"
+    },
+    "/demo/": {
+      "status": 200,
+      "title": "Demo — forge-sync",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://forge-sync.sociobot.in/demo/"
+    },
+    "/privacy/": {
+      "status": 200,
+      "title": "Privacy — forge-sync",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://forge-sync.sociobot.in/privacy/"
+    },
+    "/terms/": {
+      "status": 200,
+      "title": "Terms — forge-sync",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://forge-sync.sociobot.in/terms/"
+    },
+    "/polish-3-missing-route": {
+      "status": 404,
+      "title": "Page not found — forge-sync",
+      "h1": "That page does not exist.",
+      "returnLink": "/"
+    }
+  },
+  "demo": {
+    "title": "Demo — forge-sync",
+    "h1": "See a completed sample mirror.",
+    "initialFocus": "demo-panel-title",
+    "focusAfterReset": "reset-demo",
+    "recordingVisible": true,
+    "resetChanged": true,
+    "sentinelAfterReset": "keep"
+  },
+  "desktopFacts": [
+    {
+      "text": "Free under the MIT License.",
+      "bottom": 814.21875
+    },
+    {
+      "text": "No website analytics.",
+      "bottom": 814.21875
+    },
+    {
+      "text": "Works offline after your first visit.",
+      "bottom": 844.03125
+    }
+  ],
+  "networkOrigins": [
+    "https://forge-sync.sociobot.in"
+  ],
+  "assetMatch": true,
+  "footer": "Built by Param Factory · v0.1.0 · build 9e8cfc3f",
+  "errors": []
+}

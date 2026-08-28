@@ -1,0 +1,7 @@
+{
+  "command": "npm run test:a11y -- https://forge-sync.sociobot.in",
+  "routes": ["/", "/demo/", "/privacy/", "/terms/", "/404.html"],
+  "axeViolations": 0,
+  "seriousOrCritical": 0,
+  "reducedMotionFocusFailures": 0
+}

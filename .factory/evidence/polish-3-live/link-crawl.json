@@ -1,0 +1,30 @@
+[
+  {
+    "url": "https://forge-sync.sociobot.in/",
+    "status": 200
+  },
+  {
+    "url": "https://forge-sync.sociobot.in/demo/",
+    "status": 200
+  },
+  {
+    "url": "https://forge-sync.sociobot.in/privacy/",
+    "status": 200
+  },
+  {
+    "url": "https://forge-sync.sociobot.in/?demo=1",
+    "status": 200
+  },
+  {
+    "url": "https://forge-sync.sociobot.in/terms/",
+    "status": 200
+  },
+  {
+    "url": "https://github.com/B-Divyesh/sf-forge-sync",
+    "status": 200
+  },
+  {
+    "url": "https://forge-sync.sociobot.in/404.html",
+    "status": 200
+  }
+]
