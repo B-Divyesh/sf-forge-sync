@@ -1,0 +1,72 @@
+{
+  "routes": {
+    "/": {
+      "status": 200,
+      "title": "forge-sync — mirror a GitHub organization",
+      "lang": "en",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://forge-sync.sociobot.in/",
+      "footer": "Built by Param Factory · v0.1.0 · build 75380810"
+    },
+    "/demo/": {
+      "status": 200,
+      "title": "Demo — forge-sync",
+      "lang": "en",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://forge-sync.sociobot.in/demo/",
+      "footer": "Built by Param Factory · v0.1.0 · build 75380810"
+    },
+    "/privacy/": {
+      "status": 200,
+      "title": "Privacy — forge-sync",
+      "lang": "en",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://forge-sync.sociobot.in/privacy/",
+      "footer": "Built by Param Factory · v0.1.0 · build 75380810"
+    },
+    "/terms/": {
+      "status": 200,
+      "title": "Terms — forge-sync",
+      "lang": "en",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://forge-sync.sociobot.in/terms/",
+      "footer": "Built by Param Factory · v0.1.0 · build 75380810"
+    },
+    "/definitely-missing-review-route": {
+      "status": 404,
+      "title": "Page not found — forge-sync",
+      "lang": "en",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://forge-sync.sociobot.in/404",
+      "footer": "Built by Param Factory · v0.1.0 · build 75380810"
+    }
+  },
+  "checks": {
+    "homeBannerHidden": true,
+    "mobileCtaBottom": 543.046875,
+    "mobileNoOverflow": true,
+    "demoTitle": true,
+    "demoCanonical": true,
+    "demoBanner": true,
+    "demoPanel": true,
+    "resetChanged": true,
+    "realUntouched": true,
+    "demoDiscarded": true,
+    "targetScroll": true,
+    "targetFocus": true,
+    "backFocus": true,
+    "forwardFocus": true,
+    "offlineDemo": true,
+    "offlineBuilder": true,
+    "sameOriginFlow": true
+  },
+  "appErrors": [],
+  "requestOrigins": [
+    "https://forge-sync.sociobot.in"
+  ]
+}

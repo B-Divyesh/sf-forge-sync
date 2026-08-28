@@ -1,0 +1,369 @@
+{
+  "checks": [
+    {
+      "from": "/",
+      "url": "https://forge-sync.sociobot.in/",
+      "status": 200
+    },
+    {
+      "from": "/",
+      "url": "https://forge-sync.sociobot.in/favicon.svg",
+      "status": 200
+    },
+    {
+      "from": "/",
+      "url": "https://forge-sync.sociobot.in/apple-touch-icon.png",
+      "status": 200
+    },
+    {
+      "from": "/",
+      "url": "https://forge-sync.sociobot.in/assets/style-C1RT2Ypl.css",
+      "status": 200
+    },
+    {
+      "from": "/",
+      "url": "https://forge-sync.sociobot.in/",
+      "status": 200
+    },
+    {
+      "from": "/",
+      "url": "https://forge-sync.sociobot.in/",
+      "status": 200
+    },
+    {
+      "from": "/",
+      "url": "https://forge-sync.sociobot.in/demo/",
+      "status": 200
+    },
+    {
+      "from": "/",
+      "url": "https://forge-sync.sociobot.in/privacy/",
+      "status": 200
+    },
+    {
+      "from": "/",
+      "url": "https://forge-sync.sociobot.in/demo/",
+      "status": 200
+    },
+    {
+      "from": "/",
+      "url": "https://forge-sync.sociobot.in/?demo=1",
+      "status": 200
+    },
+    {
+      "from": "/",
+      "url": "https://forge-sync.sociobot.in/?demo=1",
+      "status": 200
+    },
+    {
+      "from": "/",
+      "url": "https://forge-sync.sociobot.in/",
+      "status": 200
+    },
+    {
+      "from": "/",
+      "url": "https://forge-sync.sociobot.in/privacy/",
+      "status": 200
+    },
+    {
+      "from": "/",
+      "url": "https://forge-sync.sociobot.in/terms/",
+      "status": 200
+    },
+    {
+      "from": "/",
+      "url": "https://github.com/B-Divyesh/sf-forge-sync",
+      "status": 200
+    },
+    {
+      "from": "/demo/",
+      "url": "https://forge-sync.sociobot.in/demo/",
+      "status": 200
+    },
+    {
+      "from": "/demo/",
+      "url": "https://forge-sync.sociobot.in/favicon.svg",
+      "status": 200
+    },
+    {
+      "from": "/demo/",
+      "url": "https://forge-sync.sociobot.in/apple-touch-icon.png",
+      "status": 200
+    },
+    {
+      "from": "/demo/",
+      "url": "https://forge-sync.sociobot.in/assets/style-C1RT2Ypl.css",
+      "status": 200
+    },
+    {
+      "from": "/demo/",
+      "url": "https://forge-sync.sociobot.in/",
+      "status": 200
+    },
+    {
+      "from": "/demo/",
+      "url": "https://forge-sync.sociobot.in/",
+      "status": 200
+    },
+    {
+      "from": "/demo/",
+      "url": "https://forge-sync.sociobot.in/demo/",
+      "status": 200
+    },
+    {
+      "from": "/demo/",
+      "url": "https://forge-sync.sociobot.in/#how",
+      "status": 200
+    },
+    {
+      "from": "/demo/",
+      "url": "https://forge-sync.sociobot.in/privacy/",
+      "status": 200
+    },
+    {
+      "from": "/demo/",
+      "url": "https://github.com/B-Divyesh/sf-forge-sync#install",
+      "status": 200
+    },
+    {
+      "from": "/demo/",
+      "url": "https://forge-sync.sociobot.in/",
+      "status": 200
+    },
+    {
+      "from": "/demo/",
+      "url": "https://forge-sync.sociobot.in/",
+      "status": 200
+    },
+    {
+      "from": "/demo/",
+      "url": "https://forge-sync.sociobot.in/privacy/",
+      "status": 200
+    },
+    {
+      "from": "/demo/",
+      "url": "https://forge-sync.sociobot.in/terms/",
+      "status": 200
+    },
+    {
+      "from": "/demo/",
+      "url": "https://github.com/B-Divyesh/sf-forge-sync",
+      "status": 200
+    },
+    {
+      "from": "/privacy/",
+      "url": "https://forge-sync.sociobot.in/privacy/",
+      "status": 200
+    },
+    {
+      "from": "/privacy/",
+      "url": "https://forge-sync.sociobot.in/favicon.svg",
+      "status": 200
+    },
+    {
+      "from": "/privacy/",
+      "url": "https://forge-sync.sociobot.in/apple-touch-icon.png",
+      "status": 200
+    },
+    {
+      "from": "/privacy/",
+      "url": "https://forge-sync.sociobot.in/assets/style-C1RT2Ypl.css",
+      "status": 200
+    },
+    {
+      "from": "/privacy/",
+      "url": "https://forge-sync.sociobot.in/",
+      "status": 200
+    },
+    {
+      "from": "/privacy/",
+      "url": "https://forge-sync.sociobot.in/demo/",
+      "status": 200
+    },
+    {
+      "from": "/privacy/",
+      "url": "https://forge-sync.sociobot.in/#how",
+      "status": 200
+    },
+    {
+      "from": "/privacy/",
+      "url": "https://forge-sync.sociobot.in/privacy/",
+      "status": 200
+    },
+    {
+      "from": "/privacy/",
+      "url": "https://forge-sync.sociobot.in/",
+      "status": 200
+    },
+    {
+      "from": "/privacy/",
+      "url": "https://forge-sync.sociobot.in/privacy/",
+      "status": 200
+    },
+    {
+      "from": "/privacy/",
+      "url": "https://forge-sync.sociobot.in/terms/",
+      "status": 200
+    },
+    {
+      "from": "/privacy/",
+      "url": "https://github.com/B-Divyesh/sf-forge-sync",
+      "status": 200
+    },
+    {
+      "from": "/terms/",
+      "url": "https://forge-sync.sociobot.in/terms/",
+      "status": 200
+    },
+    {
+      "from": "/terms/",
+      "url": "https://forge-sync.sociobot.in/favicon.svg",
+      "status": 200
+    },
+    {
+      "from": "/terms/",
+      "url": "https://forge-sync.sociobot.in/apple-touch-icon.png",
+      "status": 200
+    },
+    {
+      "from": "/terms/",
+      "url": "https://forge-sync.sociobot.in/assets/style-C1RT2Ypl.css",
+      "status": 200
+    },
+    {
+      "from": "/terms/",
+      "url": "https://forge-sync.sociobot.in/",
+      "status": 200
+    },
+    {
+      "from": "/terms/",
+      "url": "https://forge-sync.sociobot.in/demo/",
+      "status": 200
+    },
+    {
+      "from": "/terms/",
+      "url": "https://forge-sync.sociobot.in/#how",
+      "status": 200
+    },
+    {
+      "from": "/terms/",
+      "url": "https://forge-sync.sociobot.in/privacy/",
+      "status": 200
+    },
+    {
+      "from": "/terms/",
+      "url": "https://forge-sync.sociobot.in/",
+      "status": 200
+    },
+    {
+      "from": "/terms/",
+      "url": "https://forge-sync.sociobot.in/privacy/",
+      "status": 200
+    },
+    {
+      "from": "/terms/",
+      "url": "https://forge-sync.sociobot.in/terms/",
+      "status": 200
+    },
+    {
+      "from": "/terms/",
+      "url": "https://github.com/B-Divyesh/sf-forge-sync",
+      "status": 200
+    },
+    {
+      "from": "/404",
+      "url": "https://forge-sync.sociobot.in/404",
+      "status": 200
+    },
+    {
+      "from": "/404",
+      "url": "https://forge-sync.sociobot.in/favicon.svg",
+      "status": 200
+    },
+    {
+      "from": "/404",
+      "url": "https://forge-sync.sociobot.in/apple-touch-icon.png",
+      "status": 200
+    },
+    {
+      "from": "/404",
+      "url": "https://forge-sync.sociobot.in/assets/style-C1RT2Ypl.css",
+      "status": 200
+    },
+    {
+      "from": "/404",
+      "url": "https://forge-sync.sociobot.in/",
+      "status": 200
+    },
+    {
+      "from": "/404",
+      "url": "https://forge-sync.sociobot.in/demo/",
+      "status": 200
+    },
+    {
+      "from": "/404",
+      "url": "https://forge-sync.sociobot.in/#how",
+      "status": 200
+    },
+    {
+      "from": "/404",
+      "url": "https://forge-sync.sociobot.in/privacy/",
+      "status": 200
+    },
+    {
+      "from": "/404",
+      "url": "https://forge-sync.sociobot.in/",
+      "status": 200
+    },
+    {
+      "from": "/404",
+      "url": "https://forge-sync.sociobot.in/",
+      "status": 200
+    },
+    {
+      "from": "/404",
+      "url": "https://forge-sync.sociobot.in/privacy/",
+      "status": 200
+    },
+    {
+      "from": "/404",
+      "url": "https://forge-sync.sociobot.in/terms/",
+      "status": 200
+    },
+    {
+      "from": "/404",
+      "url": "https://github.com/B-Divyesh/sf-forge-sync",
+      "status": 200
+    },
+    {
+      "from": "crawl",
+      "url": "https://forge-sync.sociobot.in/robots.txt",
+      "status": 200
+    },
+    {
+      "from": "crawl",
+      "url": "https://forge-sync.sociobot.in/sitemap.xml",
+      "status": 200
+    },
+    {
+      "from": "crawl",
+      "url": "https://forge-sync.sociobot.in/og-image.webp",
+      "status": 200
+    },
+    {
+      "from": "crawl",
+      "url": "https://forge-sync.sociobot.in/apple-touch-icon.png",
+      "status": 200
+    }
+  ],
+  "sizes": {
+    "og": [
+      1200,
+      630
+    ],
+    "apple": [
+      180,
+      180
+    ]
+  }
+}

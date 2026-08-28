@@ -1,72 +1,94 @@
-# forge-sync repair handoff — perfection loop 1
+# forge-sync polish 1 handoff
 
 ## Delivered
 
-Product repair commit: `7cc585aa2def1a1842a23d6a257a9643b265f0c8`.
+Repair commit `75380810be9c0f53a3c9f51079acb645265340bc` closes every finding in
+`.factory/review-1.md` and preserves the glacial ceramic visual system.
 
-- Replaced the vague first screen with the requested maintainer-focused
-  headline, one primary sample action, visible explanation, and three plain
-  facts. At 390 px the copy and action now precede the ceramic art.
-- Added `forge-sync demo`, shipped Harbor Cooperative fixture JSON, and an
-  inspectable temporary output tree with target records, branches, tags,
-  pull-request review data, mappings, audit events, and a committed archive.
-- Added `/?demo=1` and `/demo/`, persistent demo banner, Reset demo, Start for
-  real, and a `demo:forge-sync:` browser-storage namespace. The paid kit was
-  removed because its only checkout route was dead.
-- Added claims, isolated tests, demo documentation, plain-words audit, catalog
-  description, product 404 page, route metadata, OG artwork, touch icon,
-  robots/sitemap, and Static Web Apps 404 response override.
-- Made every route use the same header/footer. Hash navigation now manages
-  History API state, scroll position, focus, and polite route announcements.
+- The first phone and desktop viewport now names the job, maintainer audience,
+  primary sample action, what the action does, and three tested facts.
+- `/?demo=1` and `/demo/` show the completed Harbor Cooperative sample with a
+  persistent banner. Reset changes only `demo:forge-sync:` state. Start for
+  real discards demo state and leaves non-demo storage untouched.
+- `forge-sync demo` uses the shipped fixtures and production model, SQLite,
+  audit, archive, rendering, and Git commit code inside a new temporary
+  directory. Canary tests prove it ignores working-directory configuration and
+  token values.
+- `.factory/claims.json` has ten retained claims. Each has exactly one tagged,
+  isolated test; `npm run test:claims` validates the mapping and runs all ten.
+- Every route has its own title, description, canonical, Open Graph/Twitter
+  metadata, 1200×630 preview, touch icon, shared header/footer, legal links,
+  and Git-derived build ID. The host serves the designed page with status 404.
+- Hash navigation restores scroll and heading focus through back and forward
+  navigation. Reduced-motion keyboard focus, 200% text, and 390 px layout are
+  regression-tested.
+- The unavailable Migration Kit and its dead checkout were removed, together
+  with unsupported price, license, and entitlement claims.
+- `.factory/polish-1.md` maps every B, M, U, L, and R finding to its change and
+  evidence. `.factory/copy-audit.md` covers every landing/dynamic copy unit.
 
-The glacial ceramic visual system is retained. `og-image.webp` and the touch
-icon are crops derived from the existing product-owned ceramic illustration;
-its provenance remains in `.factory/design.md`.
+## Clean-clone verification
 
-## Verification evidence
-
-Clean clone: `/tmp/forge-sync-clean.SDFm0e` from commit `7cc585a`.
+Fresh clone: `/tmp/forge-sync-polish-clean.3duRG2`, checked out at the exact
+repair commit above.
 
 ```sh
 npm ci
-npm run test:claim:demo-cli
-npm run test:claim:demo-browser
-npm run test:claim:configuration
-npm run test:claim:offline
-npm run test:claim:license
+npm run test:claims
 npm test
 npm run build
+cargo fmt --check
 cargo clippy --all-targets -- -D warnings
-cargo package --allow-dirty
+cargo build --release --locked
+cargo package --locked --allow-dirty
 ```
 
-All commands passed. `npm test` passed 9 Node/browser tests and 9 Rust tests.
-Every entry in `.factory/claims.json` passed from the clean clone.
+All commands passed. Claim runner: 10/10. Full suite: 13 Node/browser tests
+and 11 Rust unit/integration tests passed. `npm ci` reported zero
+vulnerabilities. The release binary is 6,409,848 bytes. The verified crate is
+237,930 bytes.
 
-Local production-site checks also passed:
+The production site build contains 5.81 kB raw JavaScript (2.53 kB gzip),
+14.00 kB raw CSS (3.97 kB gzip), 82.33 kB of self-hosted fonts, and a 70.11 kB
+hero image. It is deployed from `dist/site`.
 
-- `npm run test:a11y -- http://127.0.0.1:4174` — 0 axe violations; 0
-  serious/critical across home, demo, privacy, terms, and 404.
-- `/opt/fleet/lib/verify-url.sh http://127.0.0.1:4174/ ...` — title, `lang`,
-  one h1, main, image alt coverage, and console checks passed. Evidence:
-  `.factory/evidence/verify-url-round1/verify.json`.
-- Lighthouse mobile local production build: performance **99**, accessibility
-  **100**. Evidence: `.factory/evidence/lighthouse-round1.json`.
-- Production build: JS 4,916 bytes raw / 2.23 KB gzip; CSS 13,777 bytes raw /
-  3.90 KB gzip; hero 70 KB; derived OG image 31,882 bytes.
+## Accessibility, privacy, offline, and performance
 
-## Run and deploy
+- Local and live `npm run test:a11y`: zero axe violations and zero
+  serious/critical findings across home, demo, privacy, terms, and 404.
+- Live URL verifier: title, language, one h1, main, alt text, button labels,
+  and console checks passed. Evidence:
+  `.factory/evidence/polish-1-live/verify/verify.json`.
+- Live privacy flow contacted only `https://forge-sync.sociobot.in`; the
+  configuration builder made no outside request.
+- A cold live service-worker test reloaded `/?demo=1` offline and regenerated
+  configuration while offline.
+- Live Lighthouse mobile: performance 100, accessibility 100, best practices
+  100, SEO 100; LCP 1.7 s, CLS 0.008, total blocking time 10 ms. Evidence:
+  `.factory/evidence/polish-1-live/lighthouse-summary.json`.
 
-Build the static deployment with `npm run build`; deploy `dist/site` using the
-work-order static deployment configuration. The committed
-`site/public/staticwebapp.config.json` carries CSP, cache headers, and the
-product 404 response override.
+## Deployment and cold production check
 
-The repair branch and deployment handoff were pushed to `origin/main` at
-`4c4ef14535ec74f3cd11c88d5d98eb023bce2e14`. During the final host poll at
-10:14 UTC, `https://forge-sync.sociobot.in/` still served the preceding
-revision and `/demo/` returned 404. Static-host propagation is factory-managed;
-the committed build and deployment configuration are ready for that release.
+Static deployment `0f29e791-3a3e-47e8-b786-5af8786003bb` completed through
+the work-order deploy command. The public footer reports build `75380810`.
 
-No known blocking findings remain. The only intentionally omitted surface is
-the unsupported paid Migration Kit; no checkout or license claim is shipped.
+Fresh Chromium contexts rechecked:
+
+- `/`, `/?demo=1`, `/demo/`, `/privacy/`, and `/terms/` at HTTP 200;
+- `/definitely-missing-review-route` at HTTP 404 with the product page;
+- all 71 crawl checks passed, including internal/legal links and public assets;
+- demo reset/exit isolation, offline use, mobile first action, 390 px overflow,
+  and back/forward focus all passed with no application console errors;
+- CSP, Permissions-Policy, Referrer-Policy, X-Content-Type-Options, HTML
+  revalidation, and immutable hashed-asset caching are present.
+
+Evidence is in `.factory/evidence/polish-1-live/`, including
+`cold-check.json`, `link-crawl.json`, `home-mobile.png`, `demo-mobile.png`, and
+`home-desktop.png`.
+
+## Known gaps and next steps
+
+No review finding or known product defect remains. Docker/Podman is not
+installed in the worker, so the container wrapper was not rebuilt; its exact
+Rust release build passed from the clean clone. Registry publication remains a
+factory release action and was not performed.

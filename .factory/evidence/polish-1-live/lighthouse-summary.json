@@ -1,0 +1,10 @@
+{
+  "url": "https://forge-sync.sociobot.in/",
+  "performance": 100,
+  "accessibility": 100,
+  "bestPractices": 100,
+  "seo": 100,
+  "largestContentfulPaint": "1.7 s",
+  "cumulativeLayoutShift": 0.008,
+  "totalBlockingTime": "10 ms"
+}
