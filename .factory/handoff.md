@@ -44,7 +44,7 @@ cargo package --locked --allow-dirty
 ```
 
 All commands passed. Claim runner: 10/10. Full suite: 13 Node/browser tests
-and 11 Rust unit/integration tests passed. `npm ci` reported zero
+and 12 Rust unit/integration tests passed. `npm ci` reported zero
 vulnerabilities. The release binary is 6,409,848 bytes. The verified crate is
 237,930 bytes.
 
