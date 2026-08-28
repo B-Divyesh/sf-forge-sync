@@ -1,0 +1,8 @@
+{
+  "source": "github",
+  "organization": "harbor-coop",
+  "repository": "harbor-tools",
+  "branches": ["main", "release/2026"],
+  "tags": ["v2.4.0"],
+  "issues": [41]
+}

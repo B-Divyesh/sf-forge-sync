@@ -9,7 +9,7 @@ const context = await browser.newContext({
   reducedMotion: 'reduce'
 });
 const results = [];
-for (const path of ['/', '/privacy/', '/terms/']) {
+for (const path of ['/', '/demo/', '/privacy/', '/terms/', '/404.html']) {
   const page = await context.newPage();
   await page.goto(new URL(path, base).href, { waitUntil: 'networkidle' });
   const focusFailures = [];

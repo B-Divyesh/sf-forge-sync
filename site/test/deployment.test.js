@@ -8,4 +8,5 @@ test('Static Web Apps config delivers immutable assets and a restrictive Permiss
   assert.match(config.globalHeaders['Content-Security-Policy'], /default-src 'self'/);
   const assets = config.routes.find(route => route.route === '/assets/*');
   assert.equal(assets.headers['Cache-Control'], 'public, max-age=31536000, immutable');
+  assert.deepEqual(config.responseOverrides['404'], { rewrite: '/404.html', statusCode: 404 });
 });

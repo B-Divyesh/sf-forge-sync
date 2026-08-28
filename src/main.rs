@@ -3,6 +3,7 @@ use clap::{Args, Parser, Subcommand};
 use forge_sync::{engine, forge::Forge, github::GitHub, state::State, Config};
 use serde_json::json;
 use std::{
+    fs,
     path::PathBuf,
     process::ExitCode,
     sync::{
@@ -35,6 +36,12 @@ enum Command {
     Daemon(Common),
     /// Read local synchronization state without contacting either forge
     Status(Common),
+    /// Create and show a completed, isolated sample mirror without tokens
+    Demo {
+        /// Emit the sample location and summary as JSON
+        #[arg(long)]
+        json: bool,
+    },
     /// Print configuration resources
     Config {
         #[command(subcommand)]
@@ -113,6 +120,7 @@ fn execute(cli: Cli) -> Result<u8> {
             }
             Ok(0)
         }
+        Command::Demo { json } => run_demo(json),
         Command::Sync(args) => {
             let mut c = Config::from_path(&args.common.config)?;
             c.sync.dry_run |= args.dry_run;
@@ -146,6 +154,103 @@ fn execute(cli: Cli) -> Result<u8> {
             Ok(0)
         }
     }
+}
+
+/// Make a deterministic, inspectable sample without reading configuration,
+/// environment tokens, or the current directory.  This is intentionally not a
+/// shortcut into a user's state directory: the demo is always a new directory
+/// below the operating system temporary directory.
+fn run_demo(json_output: bool) -> Result<u8> {
+    let nonce = format!(
+        "{}-{}",
+        std::process::id(),
+        chrono::Utc::now().timestamp_nanos_opt().unwrap_or_default()
+    );
+    let root = std::env::temp_dir().join(format!("forge-sync-demo-{nonce}"));
+    fs::create_dir_all(root.join("target/harbor-tools/issues"))?;
+    fs::create_dir_all(root.join("archive/repositories/harbor-tools/items"))?;
+    fs::create_dir_all(root.join("state"))?;
+    fs::write(
+        root.join("README.md"),
+        "# forge-sync completed sample mirror\n\nThis directory is disposable demo output. It contains a target-style record, local source-to-target mappings, audit events, and a JSON archive for the fictional Harbor Cooperative organization.\n",
+    )?;
+    fs::write(
+        root.join("target/harbor-tools/branches.txt"),
+        "main\nrelease/2026\n",
+    )?;
+    fs::write(root.join("target/harbor-tools/tags.txt"), "v2.4.0\n")?;
+    fs::write(
+        root.join("target/harbor-tools/issues/41.md"),
+        "# [pull request] Make tide alerts readable\n\nAuthor: marina\nSource: https://github.example/harbor-coop/harbor-tools/pull/41\n\nReview: Please keep the alert threshold visible.\n\nInline comment: src/alerts.rs:18 — use the harbor timezone.\n",
+    )?;
+    fs::write(
+        root.join("archive/repositories/harbor-tools/items/41.json"),
+        include_str!("../examples/sample-mirror/pull-request-41.json"),
+    )?;
+    fs::write(
+        root.join("archive/repositories/harbor-tools/repository.json"),
+        include_str!("../examples/sample-mirror/repository.json"),
+    )?;
+    fs::write(
+        root.join("state/id-mappings.json"),
+        "{\n  \"github:issue:harbor-tools:41\": \"target:issue:harbor-tools:41\"\n}\n",
+    )?;
+    fs::write(
+        root.join("state/audit-events.jsonl"),
+        "{\"event\":\"repository.created\",\"repository\":\"harbor-tools\"}\n{\"event\":\"pull_request.copied\",\"number\":41}\n{\"event\":\"archive.written\",\"path\":\"repositories/harbor-tools/items/41.json\"}\n",
+    )?;
+
+    let git = std::process::Command::new("git")
+        .args(["init", "-q"])
+        .current_dir(root.join("archive"))
+        .status()
+        .context("initialize the demo JSON archive")?;
+    if !git.success() {
+        anyhow::bail!("initialize the demo JSON archive failed");
+    }
+    for (key, value) in [
+        ("user.name", "forge-sync demo"),
+        ("user.email", "demo@forge-sync.invalid"),
+    ] {
+        let status = std::process::Command::new("git")
+            .args(["config", key, value])
+            .current_dir(root.join("archive"))
+            .status()?;
+        if !status.success() {
+            anyhow::bail!("configure the demo JSON archive failed");
+        }
+    }
+    let status = std::process::Command::new("git")
+        .args(["add", "."])
+        .current_dir(root.join("archive"))
+        .status()?;
+    if !status.success() {
+        anyhow::bail!("stage the demo JSON archive failed");
+    }
+    let status = std::process::Command::new("git")
+        .args(["commit", "-qm", "archive completed sample mirror"])
+        .current_dir(root.join("archive"))
+        .status()?;
+    if !status.success() {
+        anyhow::bail!("commit the demo JSON archive failed");
+    }
+
+    if json_output {
+        println!(
+            "{}",
+            serde_json::to_string(
+                &json!({"ok":true,"path":root,"repositories":1,"issues":1,"pull_request_records":1,"archive_commit":true})
+            )?
+        );
+    } else {
+        println!("Completed sample mirror — no tokens used");
+        println!("  repository: harbor-tools");
+        println!("  branches: 2 · tags: 1 · issue records: 1 · pull-request records: 1");
+        println!("  source-to-target mappings: 1 · audit events: 3 · JSON archive: committed");
+        println!("Demo output: {}", root.display());
+        println!("Remove that directory when you are done; forge-sync did not read or write your configuration.");
+    }
+    Ok(0)
 }
 fn print_report(report: &engine::RunReport, json_output: bool) -> Result<()> {
     if json_output {

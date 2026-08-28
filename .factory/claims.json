@@ -1,0 +1,37 @@
+[
+  {
+    "id": "demo-completed-mirror",
+    "claim": "The CLI sample creates a completed mirror with branches, tags, a pull-request record, mappings, audit events, and a committed JSON archive.",
+    "where": "landing sample panel, demo page, README",
+    "test": "npm run test:claim:demo-cli",
+    "sandbox": "fresh CLI process; inspect its newly created operating-system temporary directory"
+  },
+  {
+    "id": "demo-browser-isolation",
+    "claim": "The browser sample uses its own demo storage and Reset demo clears that storage without saving real data.",
+    "where": "landing demo banner, demo page, privacy page",
+    "test": "npm run test:claim:demo-browser",
+    "sandbox": "fresh Playwright browser context at /?demo=1; inspect localStorage and every request"
+  },
+  {
+    "id": "configuration-has-no-token-field",
+    "claim": "The configuration builder creates token environment-variable names but has no token field and sends no requests away from the site.",
+    "where": "configuration builder, privacy page",
+    "test": "npm run test:claim:configuration",
+    "sandbox": "fresh Playwright browser context; edit every configuration control and inspect generated text, controls, and requests"
+  },
+  {
+    "id": "mit-license",
+    "claim": "forge-sync is released under the MIT License.",
+    "where": "landing fact, terms, README",
+    "test": "npm run test:claim:license",
+    "sandbox": "read the shipped LICENSE file"
+  },
+  {
+    "id": "offline-demo-after-first-visit",
+    "claim": "The sample and configuration builder remain available offline after a first visit.",
+    "where": "offline status banner",
+    "test": "npm run test:claim:offline",
+    "sandbox": "fresh Playwright context; visit demo online, wait for the service worker, then reload offline"
+  }
+]

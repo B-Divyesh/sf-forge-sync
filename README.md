@@ -1,28 +1,48 @@
 # forge-sync
 
-`forge-sync` continuously mirrors every repository in a GitHub organization to Forgejo, Codeberg, or GitLab. It discovers new repositories, mirrors every Git ref, carries issues and pull-request discussions into the target with source attribution, and writes the same metadata to a portable JSON archive.
+Mirror your GitHub organization to another forge.
 
-It is for maintainers and small organizations that want an independently usable copy of their work before, during, or after a forge migration. The core is open source, local-first, and has no telemetry.
+forge-sync is for maintainers who need an independent copy on Forgejo,
+Codeberg, or GitLab. It writes local state and a JSON archive alongside the
+target copy.
+
+## Try the completed sample
+
+Run this before configuring a real organization:
+
+```sh
+cargo run -- demo
+```
+
+The command creates a new temporary directory and prints its path. It does not
+read your configuration or token values. The output contains the fictional
+Harbor Cooperative `harbor-tools` repository, branches, a tag, a pull-request
+record, mappings, audit events, and a committed JSON archive. Delete the
+printed directory when you finish.
+
+The source records are in [`examples/sample-mirror`](examples/sample-mirror/).
+See [`.factory/demo.md`](.factory/demo.md) for browser and CLI sandbox details.
 
 ## Install
 
-Prebuilt binaries are attached to GitHub releases. From source (Rust 1.85+):
+Build from source with Rust 1.85 or newer:
 
 ```sh
 cargo install --path .
 forge-sync --help
 ```
 
-Or build and run the container:
+Or run the container:
 
 ```sh
 docker build -t forge-sync .
 docker run --rm -v "$PWD:/data" --env-file .env forge-sync sync --config /data/forge-sync.toml
 ```
 
-## Quick start
+## Configure a real mirror
 
-Create `forge-sync.toml` (tokens may use environment-variable names; never put token values in the file):
+Create `forge-sync.toml`. Name the environment variables that hold tokens.
+Do not put token values in this file.
 
 ```toml
 [source]
@@ -44,7 +64,7 @@ archive_dir = "forge-archive"
 git_archive = true
 ```
 
-Validate access without changing either forge, then perform one complete pass:
+Check access before making changes, then run a pass:
 
 ```sh
 export GITHUB_TOKEN=github_pat_…
@@ -53,79 +73,39 @@ forge-sync doctor --config forge-sync.toml
 forge-sync sync --config forge-sync.toml
 ```
 
-Run continuously (SIGINT/SIGTERM exits cleanly):
+Run `forge-sync daemon --config forge-sync.toml` for continuous passes. Add
+`--json` to `status` or `sync` when a script needs JSON output.
 
-```sh
-forge-sync daemon --config forge-sync.toml
-```
+## What it records
 
-Every command supports scripting output:
+- repository discovery, branches, tags, labels, milestones, and issues;
+- pull-request descriptions, reviews, inline comments, and discussion comments
+  in a labeled target issue;
+- the author, time, and original GitHub link in copied bodies;
+- source-to-target ID links and audit events in SQLite; and
+- JSON snapshots, optionally committed to a local Git archive.
 
-```sh
-forge-sync status --config forge-sync.toml --json
-forge-sync sync --config forge-sync.toml --json
-```
-
-Exit codes are `0` success, `2` configuration/usage (including unreadable or invalid TOML and missing configured token variables), `3` authentication, `4` API/rate-limit, `5` git transport, and `6` partial synchronization. Commands never prompt.
-
-## What gets synchronized
-
-- organization repository discovery, including repositories created after the daemon starts;
-- branches, tags, and other Git refs via a true mirror push;
-- labels and milestones;
-- issues, state, body, labels, milestone, and comments;
-- pull request description, review summaries, inline review comments, and conversation comments, represented as a clearly labeled target issue so closed and cross-fork PR history remains portable;
-- author, timestamps, and canonical GitHub links in every mirrored body;
-- stable source→target ID mappings and append-only audit events in SQLite;
-- forge-neutral JSON snapshots, committed to a local Git archive when enabled.
-
-Updates are idempotent. forge-sync writes a hidden source marker into target content and retains its mapping database, so restarting or retrying does not duplicate objects. GitHub conditional requests and pagination reduce rate-limit use. A failed repository does not prevent the remainder of the organization from being processed; the run exits `6` and records the failure.
-
-## Configuration
-
-Run `forge-sync config example` for the complete annotated file. Important optional controls:
-
-```toml
-[sync]
-repos = ["api", "docs"]       # empty means all repositories
-exclude = ["scratch-*"]       # simple * and ? glob patterns
-dry_run = false
-experimental_comment_relay = false
-```
-
-`forge-sync sync --dry-run` reads the source and target to produce the same
-report as a pass, but never changes either forge, Git refs, SQLite state,
-discovery cache/audit data, or the JSON archive. It is safe to run before the
-first real migration; the next real run creates every missing object it found.
-
-Bidirectional comment relay is intentionally disabled in v1; setting the experimental flag records a warning but never sends a target comment to GitHub. This avoids silently misattributing authors or drifting inline anchors.
-
-## Data and security
-
-Tokens are read only from environment variables. They are never written to config, logs, SQLite, or the JSON archive. Use a GitHub fine-grained token with organization repository read access and a target token allowed to create repositories/issues and push Git. Private target repositories are the default. `forge-sync doctor` checks identities and permissions before a first run.
-
-The archive contains the organization content you elect to mirror. Protect it like the source organization. See [SECURITY.md](SECURITY.md) for safe reporting and token guidance.
+`forge-sync sync --dry-run` reports planned changes. It does not change either
+forge, Git data, local state, the audit log, or the JSON archive.
 
 ## Development
 
 ```sh
-cargo fmt --check
-cargo test
-cargo clippy --all-targets -- -D warnings
-cargo build --release
-cargo package --allow-dirty
-
 npm ci
 npm test
-npm run build:site       # static site -> dist/site
+npm run build
+cargo fmt --check
+cargo clippy --all-targets -- -D warnings
+cargo package --allow-dirty
 ```
 
-The repository contains integration tests backed by a local mock HTTP forge and temporary Git repositories; tests do not require network credentials.
+The static documentation build is written to `dist/site`. Run it locally with
+`npm run dev`.
 
-## Deployment
+## Privacy and license
 
-The CLI is a single release binary or container. Run exactly one daemon per state directory. The documentation site is static and the factory deploys `dist/site`; it does not receive tokens or mirror data.
+The browser sample stores one `demo:forge-sync:` marker. The configuration
+builder has no token field. Read the full [privacy policy](site/privacy/index.html)
+and [terms](site/terms/index.html).
 
-## License
-
-MIT. See [LICENSE](LICENSE).
+forge-sync is released under the [MIT License](LICENSE).

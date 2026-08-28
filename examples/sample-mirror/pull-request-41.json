@@ -1,0 +1,10 @@
+{
+  "kind": "pull_request",
+  "number": 41,
+  "title": "Make tide alerts readable",
+  "author": "marina",
+  "source_url": "https://github.example/harbor-coop/harbor-tools/pull/41",
+  "reviews": [{"author": "keon", "body": "Please keep the alert threshold visible."}],
+  "inline_comments": [{"path": "src/alerts.rs", "line": 18, "body": "use the harbor timezone"}],
+  "discussion_comments": [{"author": "marina", "body": "Updated the copy for mobile."}]
+}

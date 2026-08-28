@@ -6,6 +6,11 @@
   "scripts": {
     "dev": "vite --config site/vite.config.js",
     "test": "node --test site/test/*.test.js && cargo test",
+    "test:claim:demo-cli": "cargo test --test demo_command claim_demo_completed_mirror_is_isolated_and_inspectable",
+    "test:claim:demo-browser": "node --test --test-name-pattern=@claim:demo-browser-isolation site/test/browser.test.js",
+    "test:claim:configuration": "node --test --test-name-pattern=@claim:configuration-has-no-token-field site/test/browser.test.js",
+    "test:claim:offline": "node --test --test-name-pattern=@claim:offline-demo-after-first-visit site/test/browser.test.js",
+    "test:claim:license": "node --test --test-name-pattern=@claim:mit-license site/test/claims-static.test.js",
     "test:a11y": "node scripts/a11y.mjs",
     "build": "npm run build:site",
     "build:site": "vite build --config site/vite.config.js"
