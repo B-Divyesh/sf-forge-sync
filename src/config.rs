@@ -122,8 +122,8 @@ impl Config {
         {
             bail!("target.base_url must be an http(s) URL");
         }
-        if self.sync.interval_seconds < 30 {
-            bail!("sync.interval_seconds must be at least 30");
+        if self.sync.interval_seconds == 0 {
+            bail!("sync.interval_seconds must be at least 1");
         }
         Ok(())
     }

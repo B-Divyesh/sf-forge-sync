@@ -68,5 +68,47 @@
     "where": "landing fact and offline status banner",
     "test": "npm run test:claim:offline",
     "sandbox": "fresh Playwright context; visit demo online, wait for the service worker, reload offline, and edit the configuration"
+  },
+  {
+    "id": "configured-run-state-and-archive",
+    "claim": "A configured mirror run writes local state and a JSON archive alongside the target copy.",
+    "where": "README introduction",
+    "test": "npm run test:claim:configured-state-archive",
+    "sandbox": "configured local GitHub and Forgejo-compatible fixture with two repositories; inspect the selected SQLite and archive paths"
+  },
+  {
+    "id": "continuous-daemon-passes",
+    "claim": "forge-sync daemon makes continuous configured synchronization passes.",
+    "where": "README configuration",
+    "test": "npm run test:claim:continuous-passes",
+    "sandbox": "configured local GitHub and Forgejo-compatible fixture; run the real daemon at a one-second interval and observe two discovery passes"
+  },
+  {
+    "id": "configured-records-metadata",
+    "claim": "A configured run records repository discovery, branches, tags, labels, milestones, and issues.",
+    "where": "README What it records",
+    "test": "npm run test:claim:records-metadata",
+    "sandbox": "configured two-repository local fixture with real Git refs and metadata API records; inspect target requests and archive files"
+  },
+  {
+    "id": "configured-renders-pull-request-history",
+    "claim": "A configured run copies pull-request descriptions, reviews, inline comments, and discussion comments into a labeled target issue.",
+    "where": "README What it records",
+    "test": "npm run test:claim:pull-request-history",
+    "sandbox": "configured local fixture with a pull request and all three comment forms; inspect target label and issue/comment requests"
+  },
+  {
+    "id": "configured-copied-body-attribution",
+    "claim": "Copied bodies retain the author, time, and original GitHub link.",
+    "where": "README What it records",
+    "test": "npm run test:claim:copied-attribution",
+    "sandbox": "configured local fixture; inspect the rendered target issue and comment bodies for author links, timestamps, and source URLs"
+  },
+  {
+    "id": "configured-optional-git-archive",
+    "claim": "A configured run writes JSON snapshots and commits them to a local Git archive when git_archive is enabled.",
+    "where": "README What it records",
+    "test": "npm run test:claim:optional-archive",
+    "sandbox": "two configured local runs with git_archive enabled and disabled; inspect JSON output and Git repository presence"
   }
 ]

@@ -100,6 +100,17 @@ function focusDestination(target) {
   const live = $('#route-status');
   if (live) live.textContent = `Moved to ${heading.textContent.trim()}`;
 }
+
+// A document navigation needs the same orientation as an in-page navigation.
+// In particular, the sample CTA loads a new document, so it cannot rely on the
+// hash-navigation handler below to put keyboard and screen-reader users at the
+// new context.
+function focusDocumentDestination() {
+  const target = isDemo
+    ? ($('#demo-panel-title') || $('#main'))
+    : ($('#main h1') || $('#main'));
+  focusDestination(target);
+}
 function goToHash(hash, push = true) {
   const target = $(hash);
   if (!target) return;
@@ -130,6 +141,8 @@ window.addEventListener('popstate', event => {
 
 if (location.hash && $(location.hash)) {
   requestAnimationFrame(() => focusDestination($(location.hash)));
+} else {
+  requestAnimationFrame(focusDocumentDestination);
 }
 
 function setOfflineBanner(show) {

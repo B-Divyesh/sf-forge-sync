@@ -3,7 +3,7 @@
 Mirror your GitHub organization to another forge.
 
 forge-sync is for maintainers who need an independent copy on Forgejo,
-Codeberg, or GitLab. It writes local state and a JSON archive alongside the
+Codeberg, or GitLab. It writes a local record and a JSON archive alongside the
 target copy.
 
 ## Try the completed sample
@@ -16,9 +16,9 @@ cargo run -- demo
 
 The command creates a new temporary directory and prints its path. It does not
 read your configuration or token values. The output contains the fictional
-Harbor Cooperative `harbor-tools` repository, branches, a tag, a pull-request
-record, a SQLite mapping and audit log, and a committed JSON archive. Delete
-the printed directory when you finish.
+Harbor Cooperative `harbor-tools` repository, two branches, and one tag. It
+also contains a pull-request record, SQLite mapping, audit log, and committed
+JSON archive. Delete the printed directory when you finish.
 
 The source records are in [`examples/sample-mirror`](examples/sample-mirror/).
 See [`.factory/demo.md`](.factory/demo.md) for browser and CLI sandbox details.

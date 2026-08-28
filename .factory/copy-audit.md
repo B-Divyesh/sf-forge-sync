@@ -1,81 +1,52 @@
-# Landing copy audit — polish round 1
+# Landing copy audit — polish round 2
 
-Words are whitespace-delimited. Code, file paths, command output, the wordmark,
-and forge names inside form options are excluded. Every visitor-facing copy
-unit in `site/index.html` and every dynamic status in `site/main.js` is listed.
+Words are whitespace-delimited. Commands, file paths, generated terminal
+output, the wordmark, and forge names inside form options are excluded. This
+lists every visitor-facing landing and demo-mode unit in `site/index.html` and
+`site/main.js`; all are at most 22 words.
 
 | Area | Copy unit | Words | Result |
 | --- | --- | ---: | --- |
-| Access | Skip to content | 3 | OK |
-| Navigation | Demo / How it works / Privacy | 5 | OK |
-| Demo banner | Demo — sample data, nothing is saved. | 7 | OK |
-| Demo banner | Reset demo / Start for real | 5 | OK |
-| Demo panel | Sample mirror ready | 3 | OK |
-| Demo panel | See a completed sample mirror. | 5 | OK |
-| Demo panel | Harbor Cooperative has one repository, branches, a tag, a pull-request record, mappings, audit events, and a committed JSON archive. | 18 | OK |
-| Demo panel | Open the full demo record | 6 | OK |
-| First screen | GitHub organization mirror | 3 | OK |
-| First screen | Mirror your GitHub organization to another forge. | 7 | OK |
-| First screen | For maintainers who need a usable copy on Forgejo, Codeberg, or GitLab, including issues and pull-request history. | 17 | OK |
-| First screen | Try it with sample data | 5 | OK |
-| First screen | Build your configuration | 3 | OK |
-| First screen | See a completed sample mirror; nothing is saved. | 8 | OK |
-| First screen | Free under the MIT License. | 5 | OK |
-| First screen | No website analytics. | 3 | OK |
-| First screen | Works offline after your first visit. | 6 | OK |
-| Art labels | GitHub organization / JSON archive / Your forge | 7 | OK |
-| Process | How the sample is arranged | 5 | OK |
-| Process | Copy code and its working record. | 6 | OK |
-| Process | Source / GitHub organization | 3 | OK |
-| Process | The sample starts with Harbor Cooperative’s harbor-tools repository. | 8 | OK |
-| Process | Record / Local archive | 3 | OK |
-| Process | JSON records, source-to-target IDs, and audit events remain together. | 9 | OK |
-| Process | Target / Another forge | 3 | OK |
-| Process | The sample shows branches, tags, and a readable pull-request issue. | 10 | OK |
-| Contents | What the sample contains | 4 | OK |
-| Contents | Keep issues and pull-request history with the code. | 9 | OK |
-| Contents | The completed sample makes each copied record visible before you connect a real organization. | 15 | OK |
-| Contents | Git data / Branches and tags / Two branches and one version tag. | 12 | OK |
-| Contents | Issue record / Pull-request discussion / Author, review, file name, and line number. | 12 | OK |
-| Contents | Local record / Mappings and audit / One source-to-target ID and three events. | 13 | OK |
-| Contents | Archive / Committed JSON / A Git commit records the sample archive. | 11 | OK |
-| Builder | Build locally | 2 | OK |
-| Builder | Create a configuration without token values. | 6 | OK |
-| Builder | This browser tool creates text only. | 6 | OK |
-| Builder | It does not ask for a token. | 7 | OK |
-| Builder labels | GitHub organization / Target forge / Target URL / Target owner or namespace | 11 | OK |
-| Builder actions | Copy configuration / Download configuration | 4 | OK |
-| Builder | Then check access without making changes: | 7 | OK |
-| Sample | Run the sample | 3 | OK |
-| Sample | Inspect a mirror before using your data. | 8 | OK |
-| Sample | Separate output. | 2 | OK |
-| Sample | The command creates a new temporary directory. | 7 | OK |
-| Sample | Disposable data. | 2 | OK |
-| Sample | Remove the printed directory when you finish. | 7 | OK |
-| Sample | Real fixture. | 2 | OK |
-| Sample | The source JSON ships in examples/sample-mirror. | 6 | OK |
-| Closing | Start with a fixture | 4 | OK |
-| Closing | See the sample, then build your configuration. | 8 | OK |
-| Footer | Mirror GitHub organizations to another forge. | 6 | OK |
-| Footer | Privacy / Terms / GitHub source | 5 | OK |
-| Dynamic | Demo reset. | 2 | OK |
-| Dynamic | The sample data is new. | 5 | OK |
-| Dynamic | Configuration ready. | 2 | OK |
-| Dynamic | Add token environment-variable names when you run the CLI. | 9 | OK |
-| Dynamic | Complete the fields above to generate the configuration. | 8 | OK |
-| Dynamic | Configuration copied. | 2 | OK |
-| Dynamic | Clipboard access was blocked. | 4 | OK |
-| Dynamic | Select the configuration and copy it manually. | 7 | OK |
-| Dynamic | You’re offline. | 2 | OK |
-| Dynamic | The sample and configuration builder remain available after a first visit. | 10 | OK |
-| Errors | Use a valid GitHub organization name. | 6 | OK |
-| Errors | Use a valid target owner or namespace. | 7 | OK |
-| Errors | Enter a complete target URL, including https://. | 7 | OK |
-| Errors | Use HTTPS for a remote target. | 6 | OK |
+| Access/navigation | Skip to content; Demo; How it works; Privacy | 3; 1; 3; 1 | OK |
+| Demo banner | Demo — sample data, nothing is saved. | 7 | Claim: demo-browser-isolation |
+| Demo actions | Reset demo; Leave demo and build configuration | 2; 5 | OK — result is named |
+| Demo panel | Sample mirror ready; See a completed sample mirror. | 3; 5 | OK |
+| Demo panel | Harbor Cooperative has one repository, branches, a tag, a pull-request record, record links, run events, and a JSON archive saved in Git. | 22 | Claim: demo-completed-mirror |
+| First screen | GitHub organization mirror; Mirror your GitHub organization to another forge. | 3; 7 | OK |
+| First-screen audience | For maintainers who need a copy on Forgejo, Codeberg, or GitLab with issues and pull-request history. | 16 | Declared capability claims |
+| First-screen actions | Try it with sample data; See a completed sample mirror; nothing is saved.; Build your configuration | 5; 8; 3 | OK |
+| First-screen facts | Free under the MIT License.; No website analytics.; Works offline after your first visit. | 5; 3; 6 | Declared claims |
+| Art labels | GitHub organization; JSON archive; Your forge | 2; 2; 2 | OK |
+| Sample flow | How the sample is arranged; Copy code and its working record. | 5; 6 | OK |
+| Sample flow | The sample starts with Harbor Cooperative’s harbor-tools repository. | 8 | Claim: demo-completed-mirror |
+| Sample flow | JSON records, record links, and run history remain together. | 9 | Claim: demo-completed-mirror |
+| Sample flow | The sample shows branches, tags, and a readable pull-request issue. | 10 | Claim: demo-completed-mirror |
+| Sample contents | What the sample contains; Keep issues and pull-request history with the code. | 4; 9 | OK |
+| Sample contents | The completed sample makes each copied record visible before you connect a real organization. | 15 | Claim: demo-completed-mirror |
+| Ledger | Git data; Branches and tags; Two branches and one version tag. | 2; 3; 6 | Claim: demo-completed-mirror |
+| Ledger | Issue record; Pull-request discussion; Author, review, file name, and line number. | 2; 2; 7 | Claim: demo-completed-mirror |
+| Ledger | Local record; Record links and run history; One link between source and target records, plus three run events. | 2; 5; 12 | Claim: demo-completed-mirror |
+| Ledger | Archive; JSON archive saved in Git; A Git commit records the sample archive. | 1; 5; 7 | Claim: demo-completed-mirror |
+| Builder | Build locally; Create a configuration without token values. | 2; 6 | Claim: configuration-has-no-token-field |
+| Builder | This browser tool creates text only. It does not ask for a token. | 6; 7 | Claim: configuration-has-no-token-field |
+| Builder controls | GitHub organization; Target forge; Target URL; Target owner or namespace; Copy configuration; Download configuration | 2; 2; 2; 4; 2; 2 | OK |
+| Builder next step | Then check access without making changes: | 6 | Claim: doctor-read-only |
+| CLI sample | Run the sample; Inspect a mirror before using your data. | 3; 8 | OK |
+| CLI sample | Separate output. The command creates a new temporary directory. | 2; 7 | Claim: demo-completed-mirror |
+| CLI sample | Disposable data. Remove the printed directory when you finish. | 2; 7 | OK |
+| CLI sample | Sample source files. The source JSON ships in examples/sample-mirror. | 3; 6 | Claim: demo-completed-mirror |
+| Closing/footer | Start with a fixture; See the sample, then build your configuration. | 4; 8 | OK |
+| Footer | Mirror GitHub organizations to another forge.; Privacy; Terms; GitHub source | 6; 1; 1; 2 | OK |
+| Dynamic success | Demo reset. The sample data is new. | 2; 5 | Claim: demo-browser-isolation |
+| Dynamic success | Configuration ready. Add token environment-variable names when you run the CLI. | 2; 9 | OK |
+| Dynamic feedback | Configuration copied. Clipboard access was blocked. Select the configuration and copy it manually. | 2; 4; 7 | OK |
+| Dynamic error | Complete the fields above to generate the configuration. | 8 | OK |
+| Dynamic validation | Use a valid GitHub organization name.; Use a valid target owner or namespace.; Enter a complete target URL, including https://.; Use HTTPS for a remote target. | 6; 7; 7; 6 | OK |
+| Offline | You’re offline. The sample and configuration builder remain available after a first visit. | 2; 10 | Claim: offline-demo-after-first-visit |
 
-No unit exceeds 22 words. The banned-word scan found no matches for leverage,
-seamless, effortless, robust, powerful, intuitive, reimagine, supercharge,
-delightful, journey, ecosystem, or AI-powered.
+The banned-word scan found no matches for `leverage`, `seamless`, `effortless`,
+`robust`, `powerful`, `intuitive`, `reimagine`, `supercharge`, `delightful`,
+`journey`, `ecosystem`, or `AI-powered`.
 
 ## Terminology
 
@@ -86,4 +57,6 @@ delightful, journey, ecosystem, or AI-powered.
 | Review record | pull request / pull-request record |
 | Setup file | configuration |
 | Example mode | sample / demo |
-| Stored data | JSON archive |
+| Persistent local data | local record / JSON archive |
+| Source-to-target connection | record link |
+| Execution log | run history / run event |
